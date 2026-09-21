@@ -310,6 +310,15 @@ body{padding-top:64px}
 .more{display:block;width:100%;padding:11px;border:none;border-top:1px solid var(--line);background:none;
   color:var(--mut);font-size:12px;font-weight:700}
 .warnl{padding:0 14px 12px;font-size:13px;font-weight:800;color:var(--bad)}
+html,body{overscroll-behavior:none}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select{-webkit-user-select:text;user-select:text}
+button{touch-action:manipulation}
+#upd{position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safeb));z-index:150;display:none;
+  align-items:center;gap:10px;padding:9px 9px 9px 14px;border-radius:14px;background:#17243a;border:1.5px solid var(--blu)}
+#upd.on{display:flex}
+#upd span{flex:1;font-size:13px;font-weight:700;color:var(--tx)}
+#upd button{min-height:40px;padding:8px 14px;border-radius:10px;border:none;background:var(--blu);color:#0b0f16;font-weight:800;font-size:13px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(min-width:640px){.tab{max-width:620px;margin:0 auto}}
 </style>
@@ -344,13 +353,14 @@ body{padding-top:64px}
 
 <div class="mdl" id="mdl"><div class="mc" id="mdl-c"></div></div>
 <div id="toast"></div>
+<div id="upd"><span id="upd-t"></span><button onclick="applyUpdate()">Mettre à jour</button></div>
 
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════
    MOTEUR — stockage, formules, calculs
    ══════════════════════════════════════════════════════════ */
-var APP_VER='2.1';
+var APP_VER='2.2';
 var KEY='fdc.v2', MEM={}, DB=null, SHEET=null, UI={tab:'tour',open:{action:1,bonus:1,reaction:1,free:0},
   more:{},exp:null,fo:{},edit:null};
 
@@ -1089,6 +1099,7 @@ function renderPerso(){
    +'<div class="hr"></div>'
    +'<div class="row"><button class="btn grow" onclick="snap(1)">📌 Marquer le début du combat</button>'
    +'<button class="btn grow" onclick="snap(0)" '+(c._snap?'':'disabled')+'>↺ Revenir au début</button></div>'
+   +'<div class="row" style="margin-top:9px"><button class="btn wide" onclick="checkUpdate(true)">⟳ Rechercher une mise à jour</button></div>'
    +'<div class="row" style="margin-top:9px"><button class="btn grow" onclick="rest(\'long\')">🌙 Repos long</button>'
    +'<button class="btn grow" onclick="rest(\'court\')">⚔️ Nouveau combat</button></div>'
    +'</div></div>';
@@ -1308,6 +1319,25 @@ function addRule(){var c=C0();c.rules=c.rules||[];c.rules.push(['⚠️ Titre','
 function delRule(i){C0().rules.splice(i,1);save();renderEditor();}
 
 /* ══════════════════════════════════════════════════════════
+   MISES À JOUR — détectées dans l'application, sans réinstaller
+   ══════════════════════════════════════════════════════════ */
+var SWREG=null,lastChk=0;
+function cmpVer(a,b){a=String(a).split('.').map(Number);b=String(b).split('.').map(Number);
+  for(var i=0;i<Math.max(a.length,b.length);i++){var d=(a[i]||0)-(b[i]||0);if(d)return d;}return 0;}
+function checkUpdate(manual){
+  if(location.protocol!=='https:'){if(manual)toast('Vérification possible depuis l\u2019application installée');return;}
+  lastChk=Date.now();
+  if(SWREG)try{SWREG.update();}catch(e){}
+  fetch('index.html',{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
+    var mm=t.match(/APP_VER='([^']+)'/);
+    if(mm&&cmpVer(mm[1],APP_VER)>0){$('upd-t').textContent='Version '+mm[1]+' disponible';$('upd').classList.add('on');}
+    else if(manual)toast('Déjà à jour — version '+APP_VER);
+  }).catch(function(){if(manual)toast('Pas de connexion');});
+}
+function applyUpdate(){save();$('upd').classList.remove('on');toast('Mise à jour…');
+  setTimeout(function(){location.reload();},350);}
+
+/* ══════════════════════════════════════════════════════════
    DÉMARRAGE
    ══════════════════════════════════════════════════════════ */
 function boot(){
@@ -1340,7 +1370,11 @@ function boot(){
   $('mdl').addEventListener('click',function(e){if(e.target.id==='mdl')closeMdl();});
   document.addEventListener('fullscreenchange',function(){renderHdr();});
   window.addEventListener('resize',function(){renderHdr();});
-  try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
+  try{if('serviceWorker' in navigator&&location.protocol==='https:')
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){SWREG=r;}).catch(function(){});}catch(e){}
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible'&&Date.now()-lastChk>60000)checkUpdate(false);});
+  setTimeout(function(){checkUpdate(false);},2000);
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});}catch(e){}
   setTab('tour');
 }
