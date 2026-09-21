@@ -161,8 +161,8 @@ button{cursor:pointer}
 .cbn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 5px;
   border-radius:var(--r2);border:1.5px solid var(--line2);background:var(--surf2)}
 .cbn i{font-size:19px;font-style:normal;line-height:1}
-.cbn b{font-size:10px;font-weight:700;color:var(--mut)}
-.cbn small{font-size:8px;color:var(--dim);line-height:1.3;text-align:center}
+.cbn b{font-size:11px;font-weight:700;color:var(--mut)}
+.cbn small{font-size:9px;color:var(--dim);line-height:1.3;text-align:center}
 .cbn.on{border-color:var(--bad);background:#ff6b6b18}
 .cbn.on b{color:var(--bad)}
 
@@ -223,9 +223,9 @@ select{appearance:none;-webkit-appearance:none;
   display:none;align-items:flex-end;justify-content:center}
 .mdl.open{display:flex}
 .mdl>.mc{width:100%;max-width:520px;background:var(--surf);border:1px solid var(--line);
-  border-radius:20px 20px 0 0;padding:16px 16px calc(18px + var(--safeb));max-height:92vh;overflow-y:auto}
+  border-radius:20px 20px 0 0;padding:16px 16px calc(18px + var(--safeb));max-height:88vh;overflow-y:auto}
 .mh{display:flex;align-items:center;gap:9px;margin-bottom:14px}
-.mh b{flex:1;font-size:16px}
+.mh b{flex:1;font-size:17px}
 .kp{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .kp button{min-height:58px;border-radius:12px;border:1.5px solid var(--line2);background:var(--surf2);
   font-size:22px;font-weight:700}
@@ -234,9 +234,82 @@ select{appearance:none;-webkit-appearance:none;
   z-index:300;background:#e8eef8;color:#0b0f16;padding:11px 18px;border-radius:24px;font-size:13px;
   font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-#zen{position:fixed;right:12px;bottom:calc(76px + var(--safeb));z-index:95;width:40px;height:40px;
-  border-radius:50%;border:1.5px solid var(--line2);background:rgba(22,28,38,.92);font-size:15px;
-  display:flex;align-items:center;justify-content:center;padding:0}
+
+/* ══ VERSION ÉPURÉE ══════════════════════════════════ */
+html{background:var(--bg)}
+body{padding-top:64px}
+#hdr{padding:calc(9px + env(safe-area-inset-top,0px)) 14px 7px}
+#hdr-top{margin-bottom:6px;gap:10px}
+#hdr-nm{font-size:14px}
+#hdr-hp{display:flex;align-items:baseline;gap:10px;font-size:16px}
+#hdr-hp .hs{font-size:13px;font-weight:700;color:var(--mut)}
+#hdr-hp .mx{font-size:12px;color:var(--dim);font-weight:600}
+#hdr-chips{margin-top:6px}
+#hdr-chips:empty{display:none}
+#fsb{width:32px;height:32px;border-radius:9px;border:1px solid var(--line2);background:var(--surf2);
+  font-size:14px;padding:0;flex:0 0 auto;color:var(--mut)}
+
+.hpc{display:flex;align-items:center;gap:10px;padding:13px 14px 0}
+.hpn{background:none;border:none;padding:0;display:flex;align-items:baseline;gap:5px;text-align:left}
+.hpn b{font-size:38px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.hpn span{font-size:15px;color:var(--dim);font-weight:600}
+.hps{margin-left:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex:0 1 216px}
+.hps button{height:48px;border-radius:11px;border:1.5px solid var(--line2);background:var(--surf2);
+  font-size:15px;font-weight:800}
+.hps .mi{border-color:#ff6b6b55;color:#ff9b9b}
+.hps .pl{border-color:#3ddc8455;color:#8ef0b8}
+.hpc+.hpbar{margin:11px 14px 14px}
+
+.ch .lnk{margin-left:auto;background:none;border:none;color:var(--mut);font-size:13px;font-weight:700;padding:2px 0}
+.eco button{min-height:60px;gap:2px}
+.eco i{font-size:19px}
+.eco b{font-size:13px}
+.sup{display:flex;align-items:center;gap:8px;width:100%;margin-bottom:9px;padding:9px 12px;border-radius:var(--r2);
+  border:1px solid #a07bff55;background:#a07bff14;color:var(--vio);font-size:13px;font-weight:700;text-align:left}
+.sup span{margin-left:auto;color:var(--dim)}
+
+.rrow{display:flex;align-items:center;gap:9px}
+.rrow .btn{flex:1;min-height:54px;font-size:16px}
+.flames{display:flex;gap:3px;margin-top:9px;align-items:center}
+.flames button{background:none;border:none;padding:2px;font-size:21px;line-height:1}
+.flames span{margin-left:6px;font-size:12px;color:var(--mut);font-weight:700}
+
+.lr{display:flex;align-items:center;gap:11px;width:100%;padding:13px 14px;background:none;border:none;
+  border-top:1px solid var(--line);text-align:left}
+.lr:first-child{border-top:none}
+.lr .li{font-size:19px;width:26px;text-align:center;flex:0 0 auto}
+.lr .lt{flex:1;min-width:0;font-size:14px;font-weight:700}
+.lr .lt small{display:block;font-size:12px;color:var(--dim);font-weight:500;margin-top:1px}
+.lr .lv{font-size:14px;font-weight:800;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lr .chev{color:var(--dim);font-size:17px;flex:0 0 auto}
+.lr.sel{background:#3ddc8412}
+.lr.sel .lt{color:var(--act)}
+.lr.no{opacity:.4}
+
+.wbig{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:0 14px 4px}
+.wbig b{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.wbig span{font-size:13px;color:var(--mut)}
+.wsup{padding:0 14px;font-size:12px;color:var(--vio);font-weight:600}
+.tgs{display:flex;gap:6px;padding:11px 14px 13px}
+.tgs button{flex:1;min-height:40px;border-radius:10px;border:1.5px solid var(--line2);background:var(--surf2);
+  font-size:12px;font-weight:700;color:var(--mut)}
+
+.sec{margin-bottom:12px;border-radius:var(--r);background:var(--surf);border:1px solid var(--line);
+  border-left:4px solid;overflow:hidden}
+.sec>h3{display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:14px;font-weight:800;cursor:pointer}
+.sec>h3 .st{margin-left:auto;font-size:12px;font-weight:700;color:var(--mut)}
+.xr{border-top:1px solid var(--line)}
+.xr.off{opacity:.45}
+.xh{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:none;border:none;text-align:left}
+.xh .xn{flex:1;min-width:0;font-size:14px;font-weight:700}
+.xh .xn small{display:block;font-size:12px;color:var(--dim);font-weight:500;margin-top:2px}
+.xh .xd{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.xb{padding:0 14px 13px;font-size:13px;color:#a3b0c4;line-height:1.55}
+.xb .en{font-size:11px;color:var(--dim);margin-bottom:4px}
+.xb .btn{margin-top:10px}
+.more{display:block;width:100%;padding:11px;border:none;border-top:1px solid var(--line);background:none;
+  color:var(--mut);font-size:12px;font-weight:700}
+.warnl{padding:0 14px 12px;font-size:13px;font-weight:800;color:var(--bad)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(min-width:640px){.tab{max-width:620px;margin:0 auto}}
 </style>
@@ -247,6 +320,7 @@ select{appearance:none;-webkit-appearance:none;
   <div id="hdr-top">
     <div id="hdr-nm"></div>
     <div id="hdr-hp"></div>
+    <button id="fsb" onclick="toggleFS()" aria-label="Plein écran">⛶</button>
   </div>
   <div id="hdr-bar"><i></i></div>
   <div id="hdr-chips"></div>
@@ -259,8 +333,6 @@ select{appearance:none;-webkit-appearance:none;
   <section class="tab" id="t-lancer"></section>
   <section class="tab" id="t-perso"></section>
 </main>
-
-<button id="zen" onclick="toggleZen()">⛶</button>
 
 <nav id="nav">
   <button class="nb on" data-t="tour"><i>🎯</i>Tour</button>
@@ -278,9 +350,9 @@ select{appearance:none;-webkit-appearance:none;
 /* ══════════════════════════════════════════════════════════
    MOTEUR — stockage, formules, calculs
    ══════════════════════════════════════════════════════════ */
-var APP_VER='2.0';
-var KEY='fdc.v2', MEM={}, DB=null, UI={tab:'tour',open:{action:1,bonus:1,reaction:1,free:0},
-  onlyPossible:false,zen:false,edit:null,condOpen:false};
+var APP_VER='2.1';
+var KEY='fdc.v2', MEM={}, DB=null, SHEET=null, UI={tab:'tour',open:{action:1,bonus:1,reaction:1,free:0},
+  more:{},exp:null,fo:{},edit:null};
 
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}
@@ -483,6 +555,9 @@ var DEF_CHAR={
  level:9,lvMin:8,lvMax:10,
  stats:{str:20,dex:20,con:20,int:8,wis:16,cha:8},
  saveProf:['str','con'],
+ saveAdv:{dex:'Sens du danger (Danger Sense)',str:'En rage'},
+ advNotes:[["Charmé","Ascendance féerique (Fey Ancestry) — pour éviter ou mettre fin à l'état"],
+   ["Tout état","Résolu (Resolute) — toute sauvegarde qui appliquerait un état"]],
  hpTable:{8:110,9:122,10:134},
  acF:'10+DEX+CON',shieldAC:2,speed:12,hitDie:'d12',
  rageDmg:{8:2,9:3,10:3},
@@ -581,269 +656,293 @@ var DEF_CHAR={
  st:clone(DEF_ST)
 };
 /* ══════════════════════════════════════════════════════════
-   RENDU — en-tête, Tour, Actions, Fiche, Lancer
+   RENDU — en-tête, Tour, panneaux de détail, Actions
    ══════════════════════════════════════════════════════════ */
 function $(id){return document.getElementById(id);}
 var toastT=null;
 function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('on');
   clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on');},1900);}
-
 function hpCol(p){return p>50?'var(--ok)':p>25?'var(--warn)':'var(--bad)';}
-function ECO(){return{action:{l:'Action',i:'⚡',c:'var(--act)'},ba:{l:'Bonus',i:'🔶',c:'var(--bon)'},
-  reaction:{l:'Réaction',i:'🔷',c:'var(--rea)'}};}
+function hpPct(c){return Math.max(0,Math.min(100,c.st.pv/pvMax(c)*100));}
+var ECO={action:{l:'Action',i:'⚡',c:'var(--act)'},ba:{l:'Bonus',i:'🔶',c:'var(--bon)'},
+  reaction:{l:'Réaction',i:'🔷',c:'var(--rea)'}};
+function hasRage(c){return (c.pools||[]).some(function(p){return p.id==='rage';});}
+function usesReckless(c){return (c.actions||[]).some(function(a){return a.req&&a.req.reckless;});}
+function isFS(){try{return !!document.fullscreenElement||matchMedia('(display-mode: fullscreen)').matches;}catch(e){return false;}}
 
 function renderAll(){
-  var c=C();
-  document.title=c.icon+' '+c.name;
+  var c=C();document.title=c.icon+' '+c.name;
   renderHdr();
-  renderTour();
-  if(UI.tab==='actions')renderActions();
-  else if(UI.tab==='fiche')renderFiche();
-  else if(UI.tab==='lancer')renderLancer();
-  else if(UI.tab==='perso')renderPerso();
+  ({tour:renderTour,actions:renderActions,fiche:renderFiche,lancer:renderLancer,perso:renderPerso})[UI.tab]();
+  if(SHEET)renderSheet();
   save();
 }
 
-/* ── EN-TÊTE ────────────────────────────────────────── */
+/* ── EN-TÊTE : nom, CA, PV, et seulement ce qui est actif ── */
 function renderHdr(){
-  var c=C(),st=c.st,mx=pvMax(c),p=Math.max(0,Math.min(100,st.pv/mx*100)),col=hpCol(p);
-  $('hdr-nm').innerHTML='<span>'+esc(c.icon+' '+c.name)+'</span><small>CA '+acVal(c)
-    +' · DD '+V(c).DD+' · Athlétisme '+sgn(V(c).ATH)+' · Tour '+st.turn+'</small>';
-  $('hdr-hp').innerHTML='<span style="color:'+col+'">'+st.pv+'</span>'
-    +'<span style="color:var(--dim);font-size:12px">/'+mx+'</span>';
+  var c=C(),st=c.st,p=hpPct(c),col=hpCol(p);
+  $('hdr-nm').textContent=c.icon+' '+c.name;
+  $('hdr-hp').innerHTML='<span class="hs">🛡 '+acVal(c)+'</span>'
+    +'<span style="color:'+col+';font-weight:800">'+st.pv+'<span class="mx">/'+pvMax(c)+'</span></span>';
   var bar=$('hdr-bar').firstElementChild;bar.style.width=p+'%';bar.style.background=col;
   var out=[];
-  if(st.rage)out.push(chip('👹 Rage','var(--rage)',1));
-  if(st.reckless)out.push(chip('⚡ Téméraire','var(--rage)',1));
-  if(st.shield)out.push(chip('🛡️ Bouclier','var(--fre)',1));
-  if(st.surprise)out.push(chip('⭐ Surprise','var(--vio)',1));
-  var E=ECO();['action','ba','reaction'].forEach(function(k){
-    out.push(chip(E[k].l,E[k].c,!st.used[k]));});
-  var ac=COND.filter(function(x){return st.cond[x.id];});
-  if(ac.length)out.push(chip('🩹 '+ac.map(function(x){return x.l;}).join(', '),'var(--bad)',1));
+  if(st.rage)out.push(chip('👹 Rage','var(--rage)'));
+  if(st.reckless)out.push(chip('⚡ Téméraire','var(--rage)'));
+  COND.forEach(function(x){if(st.cond[x.id])out.push(chip(x.e+' '+x.l,'var(--bad)'));});
   $('hdr-chips').innerHTML=out.join('');
+  $('fsb').style.display=isFS()?'none':'';
+  document.body.style.paddingTop=$('hdr').offsetHeight+'px';
 }
-function chip(t,c,on){return '<span class="chip'+(on?'':' off')+'"'+(on?' style="color:'+c+';border-color:'+c+';background:'+c+'1a"':'')+'>'+esc(t)+'</span>';}
+function tint(c,p){return 'color-mix(in srgb,'+c+' '+p+'%,transparent)';}
+function chip(t,c){return '<span class="chip" style="color:'+c+';border-color:'+c+';background:'+tint(c,12)+'">'+esc(t)+'</span>';}
 
 /* ── ONGLET TOUR ────────────────────────────────────── */
 function renderTour(){
-  var c=C(),st=c.st,v=V(c),mx=pvMax(c),p=Math.max(0,Math.min(100,st.pv/mx*100)),col=hpCol(p),h='';
+  var c=C(),st=c.st,v=V(c),p=hpPct(c),col=hpCol(p),h='';
 
-  h+='<div class="card"><div class="cb">'
-   +'<div class="hpbig"><b style="color:'+col+'">'+st.pv+'</b><span>/ '+mx+'</span>'
-   +'<em style="color:'+col+'">'+(st.pv===0?'💀 Inconscient':p<=25?'⚠️ Critique':'')+'</em></div>'
+  /* PV */
+  h+='<div class="card"><div class="hpc">'
+   +'<button class="hpn" onclick="askPV()"><b style="color:'+col+'">'+st.pv+'</b><span>/ '+pvMax(c)+'</span></button>'
+   +'<div class="hps"><button class="mi hold" data-d="-5">−5</button><button class="mi hold" data-d="-1">−1</button>'
+   +'<button class="pl hold" data-d="1">+1</button><button class="pl hold" data-d="5">+5</button></div></div>'
    +'<div class="hpbar"><i style="width:'+p+'%;background:'+col+'"></i></div>'
-   +'<div class="step">'
-   +'<button class="mi hold" data-d="-5">−5</button>'
-   +'<button class="mi hold" data-d="-1">−1</button>'
-   +'<button class="eq" onclick="askPV()">saisir</button>'
-   +'<button class="pl hold" data-d="1">+1</button>'
-   +'<button class="pl hold" data-d="5">+5</button>'
-   +'</div></div></div>';
+   +(st.pv===0?'<div class="warnl">💀 Inconscient</div>':'')+'</div>';
 
-  var E=ECO();
-  h+='<div class="card"><div class="ch">🎯 Économie d\u2019action<span class="sub">Tour '+st.turn+'</span></div><div class="cb">'
+  /* Ce tour */
+  h+='<div class="card"><div class="ch">Tour '+st.turn+'<button class="lnk" onclick="openSheet(\'turn\')">Plus ⋯</button></div><div class="cb">'
+   +(st.surprise&&c.surpriseDice?'<button class="sup" onclick="tog(\'surprise\')">⭐ Surprise : +'+esc(c.surpriseDice)+' au 1er toucher<span>✕</span></button>':'')
    +'<div class="eco">'+['action','ba','reaction'].map(function(k){
-      var u=st.used[k];
-      return '<button onclick="useRes(\''+k+'\')" style="border-color:'+(u?'var(--line2)':E[k].c)
-        +';background:'+(u?'var(--surf2)':E[k].c+'14')+'"><i>'+E[k].i+'</i>'
-        +'<b style="color:'+(u?'var(--dim)':E[k].c)+(u?';text-decoration:line-through':'')+'">'+E[k].l+'</b>'
-        +'<small>'+(u?'utilisée':'libre')+'</small></button>';}).join('')+'</div>'
-   +'<div class="pills">'
-   +pill('🔗 Traction',!st.used.traction,'var(--fre)',"useRes('traction')")
-   +pill('🔁 Changement d\u2019arme',!st.used.wpnChg,'var(--fre)',"useRes('wpnChg')")
-   +pill('⭐ Surprise +'+(c.surpriseDice||'2d6'),st.surprise,'var(--vio)',"tog('surprise')")
-   +pill('🤜 Créature agrippée',st.grappled,'var(--blu)',"tog('grappled')")
-   +'</div>'
-   +'<div class="row" style="margin-top:10px">'
-   +'<button class="btn grow" onclick="nextTurn()" style="border-color:var(--act);color:var(--act)">↻ Tour suivant</button>'
-   +'<button class="btn" onclick="rest(\'court\')">⚔️ Nouveau combat</button>'
-   +'</div></div></div>';
-
-  var nr=(st.pool.rage||0)<=0&&!st.rage;
-  h+='<div class="card"><div class="ch">⚙️ Modes</div><div class="cb">'
-   +'<button class="btn wide" onclick="toggleRage()" '+(nr?'disabled':'')+' style="min-height:62px;font-size:16px;'
-   +'border-color:'+(st.rage?'var(--rage)':nr?'var(--line2)':'#ff6b6b80')+';background:'+(st.rage?'var(--rage)':'var(--surf2)')
-   +';color:'+(st.rage?'#140a0a':nr?'var(--dim)':'var(--rage)')+'">'
-   +(st.rage?'👹 Rage active — cliquer pour arrêter':nr?'💤 Plus de rage disponible':'💤 Entrer en rage')+'</button>'
-   +'<div class="row" style="margin-top:9px">'
-   +sw('⚡ Téméraire',st.reckless,'var(--rage)',"tog('reckless')")
-   +sw('🛡️ Bouclier',st.shield,'var(--fre)',"tog('shield')")
-   +sw('✋ Deux mains',twoHanded(c),'var(--act)',"tog('twoH')")
-   +'</div>'
-   +(st.rage?'<div class="hr"></div><div class="tagl">'+(c.rageTags||[]).map(function(t){
-      return '<span class="tg">'+esc(interp(t,c))+'</span>';}).join('')+'</div>':'')
+      var u=st.used[k],e=ECO[k];
+      return '<button onclick="useRes(\''+k+'\')" style="border-color:'+(u?'var(--line2)':e.c)+';background:'+(u?'var(--surf2)':'transparent')+'">'
+        +'<i style="opacity:'+(u?.3:1)+'">'+e.i+'</i><b style="color:'+(u?'var(--dim)':e.c)+(u?';text-decoration:line-through':'')+'">'+e.l+'</b></button>';}).join('')
+   +'</div><button class="btn wide" onclick="nextTurn()" style="border-color:var(--act);color:var(--act)">↻ Tour suivant</button>'
    +'</div></div>';
 
+  /* Rage */
+  if(hasRage(c)){
+    var nr=(st.pool.rage||0)<=0&&!st.rage,mxr=Math.round(num((c.pools.filter(function(q){return q.id==='rage';})[0]).max,v)),fl='';
+    for(var i=0;i<mxr;i++)fl+='<button onclick="setPool(\'rage\','+(i+1)+')" style="opacity:'+(i<(st.pool.rage||0)?1:.18)+'">🔥</button>';
+    h+='<div class="card"><div class="cb"><div class="rrow">'
+     +'<button class="btn" onclick="toggleRage()" '+(nr?'disabled':'')+' style="border-color:'+(st.rage?'var(--rage)':'#ff6b6b80')
+     +';background:'+(st.rage?'var(--rage)':'var(--surf2)')+';color:'+(st.rage?'#140a0a':'var(--rage)')+'">'
+     +(st.rage?'👹 En rage':nr?'Plus de rage':'💤 Entrer en rage')+'</button>'
+     +'<button class="ico" onclick="openSheet(\'rage\')" aria-label="Effets de la rage">ⓘ</button></div>'
+     +'<div class="flames">'+fl+'<span>'+(st.pool.rage||0)+'/'+mxr+' restantes</span></div>'
+     +'</div></div>';
+  }
+
+  /* Arme */
   var w=heldW(c);
-  h+='<div class="card"><div class="ch">⚔️ Arme tenue<span class="sub">'+esc(w.mastery||'')+'</span></div><div class="cb">'
-   +'<div class="wg">'+c.weapons.map(function(x){
-      var on=x.id===st.wpn,no=wBlocked(c,x);
-      var sub=x.id===st.wpn&&x.versatile?(twoHanded(c)?'2M · '+x.versatile:'1M · '+x.dice):(no?'🛡️ bloquée':(x.fe!==false&&st.feWpn===x.id&&st.rage?'Fendoir':''));
-      return '<button class="wb'+(on?' on':'')+(no?' no':'')+'" onclick="setWpn(\''+x.id+'\')">'
-        +'<i>'+x.icon+'</i><b>'+esc(x.name.split(' ')[0])+'</b><small>'+esc(sub||'')+'</small></button>';}).join('')+'</div>'
-   +'<div class="dmgline"><span class="dv" style="color:'+(st.rage?'var(--rage)':'var(--tx)')+'">'
-   +esc(dmgTxt(c,w,{count:c.attacks||2}))+'</span>'
-   +'<span class="dl">'+esc(rangeTxt(c,w))+'</span>'
-   +(surpTxt(c)?'<span class="dl" style="color:var(--vio)">⭐ '+surpTxt(c)+'</span>':'')+'</div>'
-   +(w.eff?'<div class="note" style="margin-top:8px">'+interp(w.eff,c)+'</div>':'')
-   +'<div class="hr"></div>'
-   +'<div class="fr">'
-   +'<div class="f" style="margin:0"><label>Fendoir élémentaire — arme</label>'
-   +'<select onchange="setFE(\'w\',this.value)">'+c.weapons.filter(function(x){return x.fe!==false&&!wBlocked(c,x);})
-     .map(function(x){return '<option value="'+x.id+'"'+(st.feWpn===x.id?' selected':'')+'>'+x.icon+' '+esc(x.name)+'</option>';}).join('')+'</select></div>'
-   +'<div class="f" style="margin:0"><label>Élément</label>'
-   +'<select onchange="setFE(\'e\',this.value)">'+Object.keys(ELEM).map(function(k){
-      return '<option value="'+k+'"'+(st.feEl===k?' selected':'')+'>'+ELEM[k]+' '+cap(k)+'</option>';}).join('')+'</select></div>'
-   +'</div>'
-   +(st.rage?'':'<div class="note" style="margin-top:7px">Le Fendoir ne s\u2019applique qu\u2019en rage.</div>')
+  h+='<div class="card"><button class="lr" onclick="openSheet(\'weapon\')"><span class="li">'+w.icon+'</span>'
+   +'<span class="lt">'+esc(w.name)+(w.versatile?'<small>'+(twoHanded(c)?'à deux mains':'à une main')+'</small>':'')+'</span>'
+   +'<span class="chev">Changer ›</span></button>'
+   +'<div class="wbig"><b style="color:'+(st.rage?'var(--rage)':'var(--tx)')+'">'+esc(dmgTxt(c,w,{count:c.attacks||1}))+'</b>'
+   +'<span>'+esc(rangeTxt(c,w))+'</span></div>'
+   +(st.rage&&st.feWpn===w.id&&c.feDice?'<div class="wsup" style="color:var(--mut)">'+ELEM[st.feEl]+' Fendoir '+cap(st.feEl)+'</div>':'')
+   +'<div class="tgs">'
+   +(usesReckless(c)?tgBtn('⚡ Téméraire',st.reckless,'var(--rage)',"tog('reckless')"):'')
+   +tgBtn('🛡️ Bouclier',st.shield,'var(--fre)',"tog('shield')")
+   +(w.versatile&&!st.shield?tgBtn('✋ 2 mains',st.twoH,'var(--act)',"tog('twoH')"):'')
    +'</div></div>';
 
-  h+='<div class="card"><div class="ch">💠 Ressources</div><div class="cb">'
-   +(c.pools||[]).map(function(pl){
-      var mxp=Math.round(num(pl.max,v)),cur=st.pool[pl.id]||0,pips='';
-      if(mxp<=12){for(var i=0;i<mxp;i++)pips+='<button class="pip" onclick="setPool(\''+pl.id+'\','+(i+1)+')" style="'
-        +(i<cur?'border-color:var(--act);background:#3ddc8420;color:var(--act)':'color:var(--dim)')+'">'+(i<cur?'●':'○')+'</button>';}
-      else pips='<span style="font-weight:800">'+cur+' / '+mxp+'</span>';
-      return '<div class="res"><span style="font-size:19px">'+pl.icon+'</span>'
-        +'<span class="rn">'+esc(pl.name)+'<small>'+esc(pl.sub?pl.sub+' · ':'')+esc(pl.recharge||'')+'</small></span>'
-        +'<span class="pips">'+pips+'</span></div>';}).join('')
-   +'</div></div>';
-
-  var nc=COND.filter(function(x){return st.cond[x.id];}).length;
-  h+='<div class="card"><div class="ch" onclick="UI.condOpen=!UI.condOpen;renderTour()" style="cursor:pointer">'
-   +'🩹 États'+(nc?' <span style="color:var(--bad)">('+nc+')</span>':'')+'<span class="sub">'+(UI.condOpen?'▾':'▸')+'</span></div>'
-   +(UI.condOpen?'<div class="cb"><div class="cg">'+COND.map(function(x){
-      return '<button class="cbn'+(st.cond[x.id]?' on':'')+'" onclick="togCond(\''+x.id+'\')">'
-        +'<i>'+x.e+'</i><b>'+x.l+'</b><small>'+esc(x.d)+'</small></button>';}).join('')+'</div></div>':'')
-   +'</div>';
+  /* Ressources + états */
+  var rows=(c.pools||[]).filter(function(q){return q.id!=='rage';}).map(function(q){
+    var mx=Math.round(num(q.max,v)),cur=st.pool[q.id]||0;
+    return '<button class="lr" onclick="openSheet(\'pool:'+q.id+'\')"><span class="li">'+q.icon+'</span>'
+      +'<span class="lt">'+esc(q.name)+'</span><span class="lv" style="color:'+(cur?'var(--tx)':'var(--dim)')+'">'+cur+' / '+mx+'</span>'
+      +'<span class="chev">›</span></button>';});
+  var ac=COND.filter(function(x){return st.cond[x.id];});
+  rows.push('<button class="lr" onclick="openSheet(\'cond\')"><span class="li">🩹</span><span class="lt">États</span>'
+    +'<span class="lv" style="color:'+(ac.length?'var(--bad)':'var(--dim)')+'">'+(ac.length?ac.map(function(x){return x.l;}).join(', '):'aucun')+'</span>'
+    +'<span class="chev">›</span></button>');
+  h+='<div class="card">'+rows.join('')+'</div>';
 
   $('t-tour').innerHTML=h;
 }
+function tgBtn(t,on,c,fn){return '<button onclick="'+fn+'" style="'+(on?'border-color:'+c+';background:'+tint(c,14)+';color:'+c:'')+'">'+esc(t)+'</button>';}
+
+/* ── PANNEAUX DE DÉTAIL (feuilles du bas) ───────────── */
+function openSheet(n){SHEET=n;renderSheet();$('mdl').classList.add('open');}
+function sheetHead(t){return '<div class="mh"><b>'+t+'</b><button class="ico" onclick="closeMdl()">✕</button></div>';}
+function renderSheet(){
+  var c=C(),st=c.st,v=V(c),h='';
+  if(SHEET==='weapon'){
+    h=sheetHead('Arme tenue')+'<div class="card">'+c.weapons.map(function(x){
+      var no=wBlocked(c,x),on=x.id===st.wpn;
+      return '<button class="lr'+(on?' sel':'')+(no?' no':'')+'" onclick="setWpn(\''+x.id+'\')"><span class="li">'+x.icon+'</span>'
+        +'<span class="lt">'+esc(x.name)+'<small>'+esc(dmgTxt(c,x,{count:c.attacks||1,thrown:x.category!=='melee'}))
+        +' · '+esc(x.category==='melee'?m(reach(c,x,false)):(x.range||''))+'</small></span>'
+        +'<span class="chev">'+(on?'✓':no?'🛡️':'')+'</span></button>';}).join('')+'</div>';
+    var w=heldW(c);
+    if(w.mastery||w.eff)h+='<div class="note" style="margin-bottom:12px"><b style="color:var(--tx)">'+esc(w.mastery||'')+'</b>'
+      +(w.eff?(w.mastery?' — ':'')+interp(w.eff,c):'')+'</div>';
+    if(c.feDice){
+      h+='<div class="lbl">Fendoir élémentaire'+(st.rage?'':' — actif en rage')+'</div>'
+       +'<div class="f"><select onchange="setFE(\'w\',this.value)">'+c.weapons.filter(function(x){return x.fe!==false&&!wBlocked(c,x);})
+       .map(function(x){return '<option value="'+x.id+'"'+(st.feWpn===x.id?' selected':'')+'>'+x.icon+' '+esc(x.name)+'</option>';}).join('')+'</select></div>'
+       +'<div class="pills">'+Object.keys(ELEM).slice(0,5).map(function(k){
+         return '<button class="pill'+(st.feEl===k?' on':'')+'" onclick="setFE(\'e\',\''+k+'\')"'
+           +(st.feEl===k?' style="background:var(--blu);border-color:var(--blu)"':'')+'>'+ELEM[k]+' '+cap(k)+'</button>';}).join('')+'</div>';
+    }
+  }
+  else if(SHEET==='rage'){
+    h=sheetHead('Effets de la rage')+'<div class="card">'+(c.rageTags||[]).map(function(t){
+      return '<div class="lr"><span class="lt" style="font-weight:600">'+esc(interp(t,c))+'</span></div>';}).join('')+'</div>'
+     +'<div class="note">Rages restantes : '+(st.pool.rage||0)+' · recharge au repos long.</div>';
+  }
+  else if(SHEET&&SHEET.indexOf('pool:')===0){
+    var id=SHEET.slice(5),q=(c.pools||[]).filter(function(x){return x.id===id;})[0];
+    if(!q){closeMdl();return;}
+    var mx=Math.round(num(q.max,v)),cur=st.pool[id]||0;
+    h=sheetHead(q.icon+' '+esc(q.name))
+     +'<div class="kpv">'+cur+' <span style="font-size:18px;color:var(--dim)">/ '+mx+'</span></div>'
+     +'<div class="row"><button class="btn grow" style="min-height:56px;font-size:20px" onclick="addPool(\''+id+'\',-1)">−</button>'
+     +'<button class="btn grow" style="min-height:56px;font-size:20px" onclick="addPool(\''+id+'\',1)">+</button></div>'
+     +'<div class="note" style="margin-top:12px">'+esc((q.sub?q.sub+' · ':'')+'Recharge : '+(q.recharge||'—'))+'</div>';
+  }
+  else if(SHEET==='cond'){
+    h=sheetHead('États')+'<div class="cg">'+COND.map(function(x){
+      return '<button class="cbn'+(st.cond[x.id]?' on':'')+'" onclick="togCond(\''+x.id+'\')">'
+        +'<i>'+x.e+'</i><b>'+x.l+'</b><small>'+esc(x.d)+'</small></button>';}).join('')+'</div>'
+     +'<div class="note" style="margin-top:12px">Résolu : avantage sur toute sauvegarde qui appliquerait un de ces états.</div>';
+  }
+  else if(SHEET==='turn'){
+    h=sheetHead('Tour '+st.turn)
+     +'<div class="lbl">Une fois par tour</div><div class="pills" style="margin-bottom:14px">'
+     +pill('🔗 Traction',!st.used.traction,'var(--fre)',"useRes('traction')")
+     +pill('🔁 Changement d\u2019arme',!st.used.wpnChg,'var(--fre)',"useRes('wpnChg')")+'</div>'
+     +'<div class="lbl">Situation</div><div class="pills" style="margin-bottom:16px">'
+     +(c.surpriseDice?pill('⭐ Surprise +'+c.surpriseDice,st.surprise,'var(--vio)',"tog('surprise')"):'')
+     +pill('🤜 Créature agrippée',st.grappled,'var(--blu)',"tog('grappled')")+'</div>'
+     +'<div class="row"><button class="btn grow" onclick="closeMdl();rest(\'court\')">⚔️ Nouveau combat</button>'
+     +'<button class="btn grow" onclick="closeMdl();rest(\'long\')">🌙 Repos long</button></div>';
+  }
+  $('mdl-c').innerHTML=h;
+}
 function pill(t,on,c,fn){return '<button class="pill'+(on?' on':'')+'" onclick="'+fn+'"'
   +(on?' style="background:'+c+';border-color:'+c+'"':'')+'>'+esc(t)+'</button>';}
-function sw(t,on,c,fn){return '<button class="btn grow'+(on?'':'')+'" onclick="'+fn+'" style="font-size:13px;'
-  +(on?'border-color:'+c+';background:'+c+'1a;color:'+c:'')+'">'+esc(t)+'</button>';}
 
-/* ── ONGLET ACTIONS ─────────────────────────────────── */
+/* ── ONGLET ACTIONS : l'essentiel, le détail au toucher ── */
 function actAttacks(c){
-  var out=[];
+  var out=[],st=c.st,n=c.attacks||1;
   c.weapons.forEach(function(w){
     if(wBlocked(c,w))return;
     var thrown=w.category!=='melee';
-    out.push({id:'atk-'+w.id,type:'action',name:(c.attacks||2)+'× '+w.name,icon:w.icon,
-      _w:w,_count:c.attacks||2,_thrown:thrown,
-      range:rangeTxt(c,w,thrown),eff:(w.eff||'')+(w.mastery?' · Maîtrise : '+w.mastery:''),
-      req:{wpn:[w.id]}});
+    out.push({id:'atk-'+w.id,type:'action',name:(n>1?n+'× ':'')+w.name,icon:w.icon,
+      _w:w,_count:n,_thrown:thrown,range:rangeTxt(c,w,thrown),
+      eff:(w.mastery?'<b>'+esc(w.mastery)+'</b> — ':'')+(w.eff||''),req:{wpn:[w.id]}});
   });
-  var st=c.st;
   if(st.rage&&c.feDice){
     var fw=wpnById(c,st.feWpn);
-    if(fw&&fw.thrownFromReach!==false)out.push({id:'atk-fe',type:'action',icon:ELEM[st.feEl],
-      name:(c.attacks||2)+'× '+fw.name+' lancée (Fendoir)',_w:fw,_count:c.attacks||2,_thrown:true,
-      range:rangeTxt(c,fw,true),eff:"Retour automatique en main · Dégâts convertis en "+cap(st.feEl),
-      req:{rage:1,wpn:[fw.id]}});
+    if(fw&&fw.thrownFromReach)out.push({id:'atk-fe',type:'action',icon:ELEM[st.feEl],
+      name:(n>1?n+'× ':'')+fw.name+' lancée',_w:fw,_count:n,_thrown:true,range:rangeTxt(c,fw,true),
+      eff:"Fendoir élémentaire · Retour automatique en main · Dégâts de "+cap(st.feEl),req:{rage:1,wpn:[fw.id]}});
   }
   return out;
 }
+var SEC=[['action','Action','var(--act)','action'],['bonus','Action bonus','var(--bon)','ba'],
+         ['reaction','Réaction','var(--rea)','reaction'],['free','Gratuit','var(--fre)',null]];
 function renderActions(){
   var c=C(),st=c.st,all=actAttacks(c).concat(c.actions||[]),h='';
-  h+='<div class="row" style="margin-bottom:11px">'
-   +'<button class="btn sm grow" onclick="UI.onlyPossible=!UI.onlyPossible;renderActions()" style="'
-   +(UI.onlyPossible?'border-color:var(--act);color:var(--act)':'')+'">'
-   +(UI.onlyPossible?'✓ Seulement ce qui est jouable':'Tout afficher')+'</button>'
-   +'<button class="btn sm" onclick="nextTurn()" style="border-color:var(--act);color:var(--act)">↻ Tour</button></div>';
-  var SEC=[['action','🟢 Action','var(--act)'],['bonus','🟠 Action bonus','var(--bon)'],
-           ['reaction','🟣 Réaction — une seule par tour','var(--rea)'],['free','🟡 Gratuit / passif','var(--fre)']];
   SEC.forEach(function(s){
-    var list=all.filter(function(a){return a.type===s[0];}),body='',n=0;
-    list.forEach(function(a){
-      var why=avail(c,a),used=spent(c,a);
-      if(UI.onlyPossible&&(why||used))return;
-      if(!why&&!used)n++;
-      body+=arow(c,a,why,used);
-    });
-    if(s[0]==='action'&&st.surprise)
-      body='<div class="banner" style="color:var(--vio);background:#a07bff14;border-color:var(--vio)">⭐ Attaque surprise active : +'
-        +(c.surpriseDice||'2d6')+' sur le premier toucher</div>'+body;
-    if(!body)body='<div class="ar"><div class="bo"><div class="ae">Rien de jouable ici pour l\u2019instant.</div></div></div>';
-    var used=(s[0]==='action'&&st.used.action)||(s[0]==='bonus'&&st.used.ba)||(s[0]==='reaction'&&st.used.reaction);
-    h+='<div class="acc'+(UI.open[s[0]]?' open':'')+'" style="border-color:'+s[2]+'40">'
-      +'<h3 onclick="UI.open[\''+s[0]+'\']=!UI.open[\''+s[0]+'\'];renderActions()" style="background:'+s[2]+'12;color:'+s[2]+'">'
-      +'<span>'+s[1]+'</span><span class="cnt">'+(used?'utilisée':n+' dispo')+' '+(UI.open[s[0]]?'▾':'▸')+'</span></h3>'
-      +'<div class="bd">'+body+'</div></div>';
+    var k=s[0],ok=[],ko=[];
+    all.filter(function(a){return a.type===k;}).forEach(function(a){
+      var why=avail(c,a);(why?ko:ok).push([a,why]);});
+    var used=s[3]&&st.used[s[3]],open=UI.open[k];
+    h+='<div class="sec" style="border-left-color:'+s[2]+'"><h3 onclick="UI.open[\''+k+'\']=!UI.open[\''+k+'\'];renderActions()" style="color:'+s[2]+'">'
+     +s[1]+'<span class="st">'+(s[3]?(used?'utilisée':'libre'):'')+' '+(open?'▾':'▸')+'</span></h3>';
+    if(open){
+      ok.forEach(function(x){h+=xrow(c,x[0],null);});
+      if(!ok.length)h+='<div class="xb" style="padding-top:2px">Rien de jouable pour l\u2019instant.</div>';
+      if(ko.length){
+        h+='<button class="more" onclick="UI.more[\''+k+'\']=!UI.more[\''+k+'\'];renderActions()">'
+          +(UI.more[k]?'Masquer les indisponibles':'Voir '+ko.length+' option'+(ko.length>1?'s':'')+' indisponible'+(ko.length>1?'s':''))+'</button>';
+        if(UI.more[k])ko.forEach(function(x){h+=xrow(c,x[0],x[1]);});
+      }
+    }
+    h+='</div>';
   });
   $('t-actions').innerHTML=h;
 }
-function arow(c,a,why,used){
-  var COL={action:'var(--act)',bonus:'var(--bon)',reaction:'var(--rea)',free:'var(--fre)'};
-  var col=a.color||COL[a.type],tag=a.tag||({action:'ACTION',bonus:'AB',reaction:'RÉAC',free:'LIBRE'})[a.type];
-  var dmg='';
-  if(a._w)dmg=dmgTxt(c,a._w,{count:a._count,thrown:a._thrown});
-  else if(a.wpn){var w=a.wpn==='held'?heldW(c):wpnById(c,a.wpn);
-    if(w)dmg=dmgTxt(c,w,{dice:a.dice,count:a.count||1});}
-  else if(a.dmg)dmg=fmtD(parseD(a.dmg,V(c)));
-  var pool=a.pool?(' · '+(c.st.pool[a.pool]||0)+' restant'):'';
-  var click=(!why&&!used&&(a.pool||a.free||a.tool))?' onclick="doAction(\''+a.id+'\')"':'';
-  var sup=(a._w&&surpTxt(c))?' <span style="color:var(--vio)">· ⭐ '+surpTxt(c)+'</span>':'';
-  return '<div class="ar'+(why||used?' used':'')+'"'+click+'>'
-    +'<span class="tag" style="background:'+col+'">'+tag+'</span><div class="bo">'
-    +'<div class="an" style="color:'+col+'">'+(a.icon?a.icon+' ':'')+esc(a.name)
-    +(a.en?' <span style="font-size:10px;font-weight:500;color:var(--dim)">('+esc(a.en)+')</span>':'')+'</div>'
-    +'<div class="am">'+(a.range?'<span>📍 '+interp(a.range,c)+'</span>':'')
-    +(dmg&&dmg!=='—'?'<span>⚔️ <b style="color:'+(c.st.rage?'var(--rage)':'var(--tx)')+'">'+esc(dmg)+'</b></span>':'')+'</div>'
-    +'<div class="ae">'+interp(a.eff||'',c)+esc(pool)+sup
-    +(why?' <span style="color:var(--warn)">· '+esc(why)+'</span>':'')
-    +(used?' <span style="color:var(--dim)">· déjà utilisée</span>':'')+'</div></div></div>';
+function actDmg(c,a){
+  if(a._w)return dmgTxt(c,a._w,{count:a._count,thrown:a._thrown});
+  if(a.wpn){var w=a.wpn==='held'?heldW(c):wpnById(c,a.wpn);if(w)return dmgTxt(c,w,{dice:a.dice,count:a.count||1});}
+  if(a.dmg)return fmtD(parseD(a.dmg,V(c)));
+  return '';
 }
-/* ── ONGLET FICHE ───────────────────────────────────── */
+function xrow(c,a,why){
+  var st=c.st,exp=UI.exp===a.id,used=spent(c,a),dmg=actDmg(c,a);
+  var sub=[];if(a.range)sub.push('📍 '+interp(a.range,c));if(why)sub.push(why);else if(used)sub.push('déjà utilisée');
+  if(a.pool)sub.push((st.pool[a.pool]||0)+' restant');
+  var h='<div class="xr'+(why||used?' off':'')+'"><button class="xh" onclick="UI.exp=UI.exp===\''+a.id+'\'?null:\''+a.id+'\';renderActions()">'
+    +'<span class="xn">'+(a.icon?a.icon+' ':'')+esc(a.name)+'<small>'+esc(sub.join(' · '))+'</small></span>'
+    +(dmg&&dmg!=='—'?'<span class="xd" style="color:'+(st.rage?'var(--rage)':'var(--tx)')+'">'+esc(dmg)+'</span>':'')
+    +'</button>';
+  if(exp){
+    h+='<div class="xb">'+(a.en?'<div class="en">'+esc(a.en)+'</div>':'')+interp(a.eff||'',c);
+    if(a._w&&surpTxt(c))h+='<div style="color:var(--vio);margin-top:4px">⭐ '+surpTxt(c)+'</div>';
+    if(!why&&!used){
+      var lab=a.tool?'Ouvrir le calcul de lancer':a.pool?'Utiliser (−1)':a.free?'Marquer comme utilisé':
+        ({action:'Marquer l\u2019action utilisée',bonus:'Marquer l\u2019action bonus utilisée',reaction:'Marquer la réaction utilisée'})[a.type];
+      if(lab)h+='<button class="btn sm wide" onclick="doAction(\''+a.id+'\')">'+lab+'</button>';
+    }
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+/* ── ONGLET FICHE : repères visibles, détails repliés ─ */
+function fAcc(key,title,summary,body){
+  var op=UI.fo[key];
+  return '<div class="card"><button class="lr" onclick="UI.fo[\''+key+'\']=!UI.fo[\''+key+'\'];renderFiche()">'
+    +'<span class="lt">'+title+'<small>'+summary+'</small></span><span class="chev">'+(op?'▾':'▸')+'</span></button>'
+    +(op?'<div class="cb" style="border-top:1px solid var(--line)">'+body+'</div>':'')+'</div>';
+}
 function renderFiche(){
   var c=C(),st=c.st,v=V(c),h='';
-  h+='<div class="card"><div class="ch">🛡️ Défenses</div><div class="cb"><div class="grid3">'
-   +box('Classe d\u2019armure',acVal(c),st.shield?'bouclier inclus':'sans bouclier')
-   +box('Points de vie',pvMax(c),'dés '+(c.hitDie||'d8'))
-   +box('Vitesse',m(c.speed||9),st.rage?'+ bond':'')
+  h+='<div class="card"><div class="cb"><div class="grid3">'
+   +box('CA',acVal(c),st.shield?'avec bouclier':'')
+   +box('PV max',pvMax(c),'')
+   +box('Vitesse',m(c.speed||9),'')
    +box('Initiative',sgn(v.DEX),'avantage')
-   +box('DD de tes effets',v.DD,'8 + PB + FOR')
-   +box('Athlétisme',sgn(v.ATH),'avantage en rage')
+   +box('DD',v.DD,'')
+   +box('Athlétisme',sgn(v.ATH),'')
    +'</div></div></div>';
 
-  var SN={str:['FOR','Force'],dex:['DEX','Dextérité'],con:['CON','Constitution'],
-          int:['INT','Intelligence'],wis:['SAG','Sagesse'],cha:['CHA','Charisme']};
-  h+='<div class="card"><div class="ch">🎲 Caractéristiques et sauvegardes</div><div class="cb"><div class="grid3">'
-   +Object.keys(SN).map(function(k){
-      var pr=(c.saveProf||[]).indexOf(k)>=0,sv=mod(c.stats[k])+(pr?v.PB:0);
+  var SN={str:'FOR',dex:'DEX',con:'CON',int:'INT',wis:'SAG',cha:'CHA'};
+  var adv=c.saveAdv||{},prof=c.saveProf||[];
+  h+=fAcc('sv','🎲 Caractéristiques et sauvegardes',
+    prof.map(function(k){return SN[k]+' '+sgn(mod(c.stats[k])+v.PB);}).join(' · ')+' maîtrisées',
+    '<div class="grid3">'+Object.keys(SN).map(function(k){
+      var pr=prof.indexOf(k)>=0,sv=mod(c.stats[k])+(pr?v.PB:0),a=adv[k];
       return '<div class="box" style="'+(pr?'border-color:#ffcb4550':'')+'">'
-        +'<div class="bl">'+SN[k][0]+' '+c.stats[k]+'</div>'
+        +'<div class="bl">'+SN[k]+' '+c.stats[k]+' · test '+sgn(mod(c.stats[k]))+'</div>'
         +'<div class="bv" style="color:'+(pr?'var(--fre)':'var(--tx)')+'">'+sgn(sv)+'</div>'
-        +'<div class="bs">test '+sgn(mod(c.stats[k]))+(pr?' · maîtrise':'')+'</div></div>';}).join('')
-   +'</div>'
-   +'<div class="note" style="margin-top:9px"><b style="color:var(--blu)">Résolu</b> — avantage sur toute sauvegarde qui appliquerait un état, quelle que soit la caractéristique.'
-   +(st.rage?' <b style="color:var(--rage)">Rage</b> — avantage aux sauvegardes de Force.':'')+'</div>'
-   +'</div></div>';
+        +'<div class="bs" style="color:'+(a?'var(--act)':'var(--dim)')+'">'+(a?'avantage · '+esc(a):(pr?'maîtrise':'—'))+'</div></div>';}).join('')
+    +'</div>'
+    +((c.advNotes||[]).length?'<div class="hr"></div><div class="lbl">Avantages selon la situation</div>'
+      +(c.advNotes||[]).map(function(n){return '<div class="note" style="margin-bottom:5px"><b style="color:var(--tx)">'
+        +esc(n[0])+'</b> — '+esc(n[1])+'</div>';}).join(''):''));
 
   var rows=c.weapons.map(function(w){
-    if(w.category==='melee')return[w.icon+' '+w.name,m(reach(c,w,false)),'réaction '+m(reach(c,w,true))];
-    return[w.icon+' '+w.name,w.range||'—',w.mastery||''];});
+    return w.category==='melee'?[w.icon+' '+w.name,m(reach(c,w,false)),'réaction '+m(reach(c,w,true))]
+                               :[w.icon+' '+w.name,w.range||'—',''];});
   if(st.rage&&c.feDice){var fw=wpnById(c,st.feWpn);
-    if(fw)rows.push([ELEM[st.feEl]+' '+fw.name+' lancée (Fendoir)',rangeTxt(c,fw,true),'retour automatique']);}
-  rows.push(['⛓️ Grappin à chaîne','7,5m','portée fixe']);
-  rows.push(['🤜 Agripper',m(1.5+(c.reachTurn||0)+(st.rage?(c.reachRage||0):0)),'ton tour']);
-  h+='<div class="card"><div class="ch">📐 Portées'+(st.rage?' <span style="color:var(--rage)">en rage</span>':'')+'</div><div class="cb">'
-   +'<div class="grid2">'+rows.map(function(r){return box(r[0],r[1],r[2]);}).join('')+'</div>'
-   +'<div class="note" style="margin-top:9px">Longs Membres +1,5m : ton tour uniquement, jamais sur les réactions. Stature Géante +1,5m : en rage, réactions comprises.</div>'
-   +'</div></div>';
+    if(fw&&fw.thrownFromReach)rows.push([ELEM[st.feEl]+' '+fw.name+' lancée',rangeTxt(c,fw,true),'retour auto']);}
+  var hw=heldW(c);
+  h+=fAcc('po','📐 Portées',esc(hw.name)+' : '+esc(rangeTxt(c,hw))+(st.rage?' · en rage':''),
+    '<div class="grid2">'+rows.map(function(r){return box(r[0],r[1],r[2]);}).join('')+'</div>'
+    +(c.reachTurn||c.reachRage?'<div class="note" style="margin-top:9px">Longs Membres : +'+m(c.reachTurn||0)
+      +' pendant ton tour seulement. Stature Géante : +'+m(c.reachRage||0)+' en rage, réactions comprises.</div>':''));
 
-  h+='<div class="card"><div class="ch">⭐ Dons et traits</div><div class="cb">'
-   +(c.feats||[]).map(function(f){
+  h+=fAcc('dn','⭐ Dons et traits',(c.feats||[]).map(function(f){return esc(f.n.split(' ').slice(0,3).join(' '));}).join(' · ')||'aucun',
+    (c.feats||[]).map(function(f){
       return '<div class="feat"><h4>'+esc(f.n)+'</h4><div class="en">'+esc(f.en||'')+'</div>'
-        +f.b.map(function(b){return '<p>'+(b[0]?'<b>'+esc(b[0])+'</b> — ':'')+interp(b[1],c)+'</p>';}).join('')+'</div>';}).join('')
-   +'</div></div>';
+        +f.b.map(function(b){return '<p>'+(b[0]?'<b>'+esc(b[0])+'</b> — ':'')+interp(b[1],c)+'</p>';}).join('')+'</div>';}).join(''));
 
-  h+='<div class="card"><div class="ch">⚠️ Rappels</div><div class="cb"><div class="grid2">'
-   +(c.rules||[]).map(function(r){return '<div class="box"><div style="font-size:12px;font-weight:700;margin-bottom:3px">'
-      +esc(r[0])+'</div><div class="bs" style="font-size:11px;line-height:1.45">'+interp(r[1],c)+'</div></div>';}).join('')
-   +'</div></div></div>';
+  h+=fAcc('rp','⚠️ Rappels',(c.rules||[]).length+' points de règle',
+    (c.rules||[]).map(function(r){return '<div style="padding:8px 0;border-top:1px solid var(--line)">'
+      +'<div style="font-size:13px;font-weight:700">'+esc(r[0])+'</div>'
+      +'<div class="note">'+interp(r[1],c)+'</div></div>';}).join(''));
   $('t-fiche').innerHTML=h;
 }
 function box(l,v2,s){return '<div class="box"><div class="bl">'+esc(l)+'</div><div class="bv">'+esc(v2)+'</div>'
@@ -894,14 +993,15 @@ function renderLancer(){
    ACTIONS UTILISATEUR
    ══════════════════════════════════════════════════════════ */
 function setTab(t){UI.tab=t;
-  ['tour','actions','fiche','lancer','perso'].forEach(function(k){
-    $('t-'+k).className='tab'+(k===t?' on':'');});
-  Array.prototype.forEach.call(document.querySelectorAll('.nb'),function(b){
-    b.className='nb'+(b.dataset.t===t?' on':'');});
+  ['tour','actions','fiche','lancer','perso'].forEach(function(k){$('t-'+k).className='tab'+(k===t?' on':'');});
+  Array.prototype.forEach.call(document.querySelectorAll('.nb'),function(b){b.className='nb'+(b.dataset.t===t?' on':'');});
   try{window.scrollTo(0,0);}catch(e){}
   renderAll();}
-function toggleZen(){UI.zen=!UI.zen;document.body.classList.toggle('zen',UI.zen);}
-function dPV(d){var st=T();st.pv=Math.max(0,Math.min(pvMax(),st.pv+d));renderHdr();renderTour();save();}
+function toggleFS(){
+  try{var d=document,el=d.documentElement;
+    if(!d.fullscreenElement){var p=el.requestFullscreen({navigationUI:'hide'});if(p&&p.catch)p.catch(function(){toast('Plein écran indisponible ici');});}
+    else d.exitFullscreen();}catch(e){toast('Plein écran indisponible ici');}}
+function dPV(d){var st=T();st.pv=Math.max(0,Math.min(pvMax(),st.pv+d));renderAll();}
 function setPV(n){var st=T();st.pv=Math.max(0,Math.min(pvMax(),n|0));renderAll();}
 function useRes(k){var st=T();st.used[k]=!st.used[k];renderAll();}
 function tog(k){var st=T();
@@ -917,12 +1017,14 @@ function setWpn(id){var c=C(),w=wpnById(c,id);if(!w)return;
   c.st.wpn=id;renderAll();}
 function setFE(k,v2){var st=T();if(k==='w')st.feWpn=v2;else st.feEl=v2;renderAll();}
 function setPool(id,n){var st=T();st.pool[id]=(st.pool[id]===n)?n-1:n;renderAll();}
-function togCond(id){var st=T();st.cond[id]=!st.cond[id];renderTour();renderHdr();save();}
-function setT(k,v2){T()[k]=v2;renderLancer();}
+function addPool(id,d){var c=C(),q=(c.pools||[]).filter(function(x){return x.id===id;})[0];if(!q)return;
+  var mx=Math.round(num(q.max,V(c)));c.st.pool[id]=Math.max(0,Math.min(mx,(c.st.pool[id]||0)+d));renderAll();}
+function togCond(id){var st=T();st.cond[id]=!st.cond[id];renderAll();}
+function setT(k,v2){T()[k]=v2;renderAll();}
 function nextTurn(){var st=T();st.turn++;
   st.used={action:0,ba:0,reaction:0,traction:0,wpnChg:0};
   if(st.surprise)st.surprise=false;
-  renderAll();toast('Tour '+st.turn);}
+  UI.exp=null;renderAll();toast('Tour '+st.turn);}
 function rest(kind){var c=C(),st=c.st,v=V(c);
   if(kind==='long'){st.pv=pvMax(c);(c.pools||[]).forEach(function(p){st.pool[p.id]=Math.round(num(p.max,v));});}
   (c.pools||[]).forEach(function(p){if(p.recharge==='Par combat')st.pool[p.id]=Math.round(num(p.max,v));});
@@ -930,21 +1032,20 @@ function rest(kind){var c=C(),st=c.st,v=V(c);
   st.used={action:0,ba:0,reaction:0,traction:0,wpnChg:0};
   renderAll();toast(kind==='long'?'Repos long — tout est rechargé':'Nouveau combat');}
 function doAction(id){
-  var c=C(),st=c.st,a=(c.actions||[]).filter(function(x){return x.id===id;})[0];
+  var c=C(),st=c.st,a=actAttacks(c).concat(c.actions||[]).filter(function(x){return x.id===id;})[0];
   if(!a)return;
   if(a.tool==='throw'){setTab('lancer');return;}
-  if(a.pool){st.pool[a.pool]=Math.max(0,(st.pool[a.pool]||0)-1);}
+  if(a.pool)st.pool[a.pool]=Math.max(0,(st.pool[a.pool]||0)-1);
   if(a.free)st.used[a.free]=1;
   else if(a.type==='action')st.used.action=1;
   else if(a.type==='bonus')st.used.ba=1;
   else if(a.type==='reaction')st.used.reaction=1;
-  renderAll();toast(a.name);
+  UI.exp=null;renderAll();toast(a.name.replace(/<[^>]+>/g,''));
 }
 
-/* ── modale de saisie numérique ─────────────────────── */
+/* ── saisie des PV ──────────────────────────────────── */
 var KPV='';
-function askPV(){KPV='';openMdl('<div class="mh"><b>Points de vie</b>'
-  +'<button class="ico" onclick="closeMdl()">✕</button></div>'
+function askPV(){SHEET=null;KPV='';openMdl(sheetHead('Points de vie')
   +'<div class="kpv" id="kpv">'+T().pv+'</div>'
   +'<div class="kp">'+[1,2,3,4,5,6,7,8,9].map(function(d){return '<button onclick="kp(\''+d+'\')">'+d+'</button>';}).join('')
   +'<button onclick="kp(\'c\')" style="font-size:14px">C</button><button onclick="kp(\'0\')">0</button>'
@@ -952,12 +1053,11 @@ function askPV(){KPV='';openMdl('<div class="mh"><b>Points de vie</b>'
   +'<div class="row" style="margin-top:12px">'
   +'<button class="btn grow" onclick="closeMdl()">Annuler</button>'
   +'<button class="btn grow" style="border-color:var(--act);color:var(--act)" onclick="kpOk()">Valider</button></div>');}
-function kp(d){if(d==='c')KPV='';else if(d==='b')KPV=KPV.slice(0,-1);
-  else if(KPV.length<4)KPV+=d;
+function kp(d){if(d==='c')KPV='';else if(d==='b')KPV=KPV.slice(0,-1);else if(KPV.length<4)KPV+=d;
   $('kpv').textContent=KPV===''?'0':KPV;}
-function kpOk(){setPV(parseInt(KPV||'0',10));closeMdl();}
+function kpOk(){var n=parseInt(KPV||'0',10);closeMdl();setPV(n);}
 function openMdl(html){$('mdl-c').innerHTML=html;$('mdl').classList.add('open');}
-function closeMdl(){$('mdl').classList.remove('open');}
+function closeMdl(){SHEET=null;$('mdl').classList.remove('open');}
 /* ══════════════════════════════════════════════════════════
    ONGLET PERSOS — sélection, sauvegarde, éditeur
    ══════════════════════════════════════════════════════════ */
@@ -1090,8 +1190,14 @@ function renderEditor(){
         +fN(SN[k],c.stats[k],"setC('stats."+k+"',+this.value)")
         +'<div class="f" style="flex:0 0 auto"><label>Sauv.</label>'
         +'<button class="btn sm" onclick="togSave(\''+k+'\')" style="'+(pr?'border-color:var(--fre);color:var(--fre)':'')+'">'
-        +(pr?'maîtrise':'—')+'</button></div></div>';}).join('')
+        +(pr?'maîtrise':'—')+'</button></div></div>'
+        +fT('Avantage aux sauvegardes de '+SN[k],(c.saveAdv||{})[k]||'',"setC('saveAdv."+k+"',this.value)",'source, vide = aucun');}).join('')
    +'</div></div>';
+  h+='<div class="card"><div class="ch">🎯 Avantages selon la situation<span class="sub">'+(c.advNotes||[]).length+'</span></div><div class="cb">'
+   +(c.advNotes||[]).map(function(r,i){return '<div class="fr">'+fT('Situation',r[0],"setAdv("+i+",0,this.value)")
+      +fT('Source',r[1],"setAdv("+i+",1,this.value)")
+      +'<div class="f" style="flex:0 0 auto"><label>&nbsp;</label><button class="ico" onclick="delAdv('+i+')">🗑</button></div></div>';}).join('')
+   +'<button class="btn wide" onclick="addAdv()">+ Ajouter un avantage</button></div></div>';
 
   h+='<div class="card"><div class="ch">🛡️ Défenses et traits</div><div class="cb">'
    +'<div class="fr">'+fN('PV max au niveau '+c.level,(c.hpTable&&c.hpTable[c.level])||c.hpMax||0,"setHP(+this.value)")
@@ -1167,7 +1273,7 @@ function renderEditor(){
 function C0(){return DB.chars.filter(function(x){return x.id===UI.edit;})[0];}
 function setC(path,v2){var c=C0(),p=path.split('.'),o=c;
   for(var i=0;i<p.length-1;i++){if(!o[p[i]])o[p[i]]={};o=o[p[i]];}
-  o[p[p.length-1]]=v2;
+  if(v2===''&&p[0]==='saveAdv')delete o[p[p.length-1]];else o[p[p.length-1]]=v2;
   if(path==='level'){if(!c.hpTable)c.hpTable={};
     if(!c.hpTable[c.level])c.hpTable[c.level]=pvMax(c);
     save();return renderEditor();}
@@ -1194,6 +1300,9 @@ function addA(){var c=C0();c.actions=c.actions||[];
   c.actions.push({id:'a'+Date.now().toString(36).slice(-4),type:'action',name:'Nouvelle action',eff:''});
   UI.o_a=c.actions.length-1;save();renderEditor();}
 function delA(i){C0().actions.splice(i,1);UI.o_a=-1;save();renderEditor();}
+function setAdv(i,j,v2){C0().advNotes[i][j]=v2;save();}
+function addAdv(){var c=C0();c.advNotes=c.advNotes||[];c.advNotes.push(['Situation','Source']);save();renderEditor();}
+function delAdv(i){C0().advNotes.splice(i,1);save();renderEditor();}
 function setRule(i,j,v2){C0().rules[i][j]=v2;save();}
 function addRule(){var c=C0();c.rules=c.rules||[];c.rules.push(['⚠️ Titre','Texte']);save();renderEditor();}
 function delRule(i){C0().rules.splice(i,1);save();renderEditor();}
@@ -1210,7 +1319,11 @@ function boot(){
     c.st.used=Object.assign({action:0,ba:0,reaction:0,traction:0,wpnChg:0},c.st.used||{});
     c.st.cond=c.st.cond||{};c.st.pool=c.st.pool||{};
     (c.pools||[]).forEach(function(p){if(c.st.pool[p.id]==null)c.st.pool[p.id]=Math.round(num(p.max,V(c)));});
-    if(!wpnById(c,c.st.wpn)&&c.weapons&&c.weapons[0])c.st.wpn=c.weapons[0].id;});
+    if(!wpnById(c,c.st.wpn)&&c.weapons&&c.weapons[0])c.st.wpn=c.weapons[0].id;
+    if(!c.saveAdv){c.saveAdv=c.id===DEF_CHAR.id?clone(DEF_CHAR.saveAdv):{};}
+    if(!c.advNotes){c.advNotes=c.id===DEF_CHAR.id?clone(DEF_CHAR.advNotes):[];}
+    if(c.saveAdv.con&&/bugbear/i.test(c.saveAdv.con))delete c.saveAdv.con;});
+  DB.v=3;
   if(!DB.chars.filter(function(x){return x.id===DB.active;}).length)DB.active=DB.chars[0].id;
 
   Array.prototype.forEach.call(document.querySelectorAll('.nb'),function(b){
@@ -1225,6 +1338,8 @@ function boot(){
   ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
     document.addEventListener(ev,stop);});
   $('mdl').addEventListener('click',function(e){if(e.target.id==='mdl')closeMdl();});
+  document.addEventListener('fullscreenchange',function(){renderHdr();});
+  window.addEventListener('resize',function(){renderHdr();});
   try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});}catch(e){}
   setTab('tour');

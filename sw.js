@@ -2,7 +2,7 @@
    Stratégie : réponse immédiate depuis le cache (hors ligne garanti),
    puis mise à jour silencieuse en arrière-plan. Une nouvelle version
    déposée sur le serveur s'affiche au lancement suivant. */
-const CACHE = 'fdc-app-v1';
+const CACHE = 'fdc-app-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest',
                './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
