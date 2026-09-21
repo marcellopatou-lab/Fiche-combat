@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b0f16">
+<title>Fiche de combat</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0b0f16;--surf:#161c26;--surf2:#1f2735;--line:#2c3545;--line2:#3a4557;
+  --tx:#eef2f8;--mut:#9aa7ba;--dim:#5d6b80;
+  --act:#3ddc84;--bon:#ff9b45;--rea:#b98cff;--fre:#ffcb45;--rage:#ff6b6b;--blu:#6fa8ff;--vio:#a07bff;
+  --ok:#3ddc84;--warn:#ffcb45;--bad:#ff6b6b;
+  --r:14px;--r2:10px;
+  --safeb:env(safe-area-inset-bottom,0px);
+}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:15px;line-height:1.45;min-height:100vh;
+  padding-top:var(--hpad,74px);padding-bottom:calc(68px + var(--safeb))}
+body.zen{--hpad:0px}
+body.zen #hdr{display:none}
+button,select,input,textarea{font-family:inherit;font-size:15px;color:var(--tx)}
+button{cursor:pointer}
+
+/* ── EN-TÊTE ───────────────────────────────────────── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:90;background:rgba(9,13,20,.97);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:8px 12px 6px}
+#hdr-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+#hdr-nm{flex:1;min-width:0;font-size:13px;font-weight:700;letter-spacing:.2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hdr-nm small{display:block;font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.3px}
+#hdr-hp{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+#hdr-bar{height:3px;background:var(--surf2);border-radius:2px;overflow:hidden;margin-bottom:5px}
+#hdr-bar i{display:block;height:100%;border-radius:2px;transition:width .25s,background .25s}
+#hdr-chips{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;
+  font-size:11px;font-weight:700;border:1px solid;line-height:1.5}
+.chip.off{border-color:var(--line2);color:var(--dim);text-decoration:line-through}
+
+/* ── NAVIGATION ────────────────────────────────────── */
+#nav{position:fixed;bottom:0;left:0;right:0;z-index:90;background:rgba(9,13,20,.97);
+  backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;
+  height:calc(64px + var(--safeb));padding-bottom:var(--safeb)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:none;border:none;color:var(--dim);font-size:10px;font-weight:700;padding:0}
+.nb i{font-size:20px;font-style:normal;line-height:1}
+.nb.on{color:var(--act)}
+.nb.on i{transform:translateY(-1px)}
+
+/* ── STRUCTURE ─────────────────────────────────────── */
+.tab{display:none;padding:12px 12px 20px}
+.tab.on{display:block}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.ch{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--surf2);
+  border-bottom:1px solid var(--line);font-size:13px;font-weight:700}
+.ch .sub{margin-left:auto;font-size:11px;font-weight:600;color:var(--mut)}
+.cb{padding:12px 14px}
+.hr{height:1px;background:var(--line);margin:12px 0}
+.note{font-size:12px;color:var(--mut);line-height:1.5}
+.lbl{font-size:12px;font-weight:700;color:var(--mut);margin-bottom:7px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;
+  padding:10px 14px;border-radius:var(--r2);border:1.5px solid var(--line2);
+  background:var(--surf2);color:var(--tx);font-size:14px;font-weight:700}
+.btn.sm{min-height:36px;padding:7px 11px;font-size:13px}
+.btn.wide{width:100%}
+.btn:active{filter:brightness(1.25)}
+.btn[disabled]{opacity:.35}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.grow{flex:1}
+
+/* ── POINTS DE VIE ─────────────────────────────────── */
+.hpbig{display:flex;align-items:baseline;gap:8px}
+.hpbig b{font-size:38px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.hpbig span{font-size:17px;color:var(--dim)}
+.hpbig em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700}
+.hpbar{height:12px;background:var(--surf2);border-radius:8px;overflow:hidden;margin:9px 0 11px}
+.hpbar i{display:block;height:100%;border-radius:8px;transition:width .25s,background .25s}
+.step{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.step button{min-height:52px;border-radius:var(--r2);border:1.5px solid var(--line2);
+  background:var(--surf2);font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.step button.mi{border-color:#ff6b6b55;color:#ff9b9b}
+.step button.pl{border-color:#3ddc8455;color:#8ef0b8}
+.step button.eq{border-color:var(--line2);color:var(--mut);font-size:13px}
+
+/* ── ÉCONOMIE D'ACTION ─────────────────────────────── */
+.eco{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:9px}
+.eco button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-height:74px;border-radius:var(--r);border:2px solid;background:var(--surf2);padding:6px 4px}
+.eco i{font-size:23px;font-style:normal;line-height:1}
+.eco b{font-size:12px;font-weight:800;letter-spacing:.3px}
+.eco small{font-size:9px;color:var(--dim);font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{border-radius:22px;padding:8px 13px;min-height:40px;font-size:13px;font-weight:700;
+  border:1.5px solid var(--line2);background:var(--surf2);color:var(--mut)}
+.pill.on{color:#0b0f16}
+
+/* ── RESSOURCES ────────────────────────────────────── */
+.res{display:flex;align-items:center;gap:10px;padding:9px 0}
+.res+.res{border-top:1px solid var(--line)}
+.res .rn{flex:1;min-width:0;font-size:13px;font-weight:700}
+.res .rn small{display:block;font-size:10px;color:var(--dim);font-weight:600}
+.pips{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:58%}
+.pip{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--line2);background:var(--surf2);
+  font-size:12px;display:flex;align-items:center;justify-content:center;padding:0}
+
+/* ── ARME ──────────────────────────────────────────── */
+.wg{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch}
+.wb{flex:0 0 auto;min-width:78px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 8px;border-radius:var(--r2);border:1.5px solid var(--line2);background:var(--surf2)}
+.wb i{font-size:22px;font-style:normal;line-height:1}
+.wb b{font-size:11px;font-weight:700;color:var(--mut)}
+.wb small{font-size:9px;color:var(--dim)}
+.wb.on{border-color:var(--act);background:#3ddc8414}
+.wb.on b{color:var(--act)}
+.wb.no{opacity:.42}
+.dmgline{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--surf2);
+  border-radius:var(--r2);padding:10px 12px;margin-top:10px}
+.dmgline .dv{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.dmgline .dl{font-size:11px;color:var(--mut)}
+
+/* ── LISTE D'ACTIONS ───────────────────────────────── */
+.acc{border:1.5px solid;border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+.acc>h3{display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:13px;font-weight:800}
+.acc>h3 .cnt{margin-left:auto;font-size:11px;font-weight:700;opacity:.75}
+.acc .bd{display:none;background:var(--surf)}
+.acc.open .bd{display:block}
+.ar{display:flex;gap:10px;padding:11px 14px;border-top:1px solid var(--line)}
+.ar.used{opacity:.32}
+.ar .tag{flex:0 0 auto;align-self:flex-start;padding:3px 7px;border-radius:6px;font-size:9px;
+  font-weight:800;color:#0b0f16;margin-top:2px}
+.ar .bo{flex:1;min-width:0}
+.ar .an{font-size:14px;font-weight:700;margin-bottom:3px}
+.ar .am{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-bottom:3px}
+.ar .am b{color:var(--tx);font-weight:800}
+.ar .ae{font-size:12px;color:#93a1b8;line-height:1.5}
+.banner{padding:7px 14px;font-size:12px;border-left:3px solid;line-height:1.45}
+
+/* ── FICHE ─────────────────────────────────────────── */
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.box{background:var(--surf2);border:1px solid var(--line);border-radius:var(--r2);padding:10px 12px}
+.box .bl{font-size:11px;color:var(--mut);margin-bottom:2px}
+.box .bv{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+.box .bs{font-size:10px;color:var(--dim)}
+.tagl{display:flex;flex-wrap:wrap;gap:6px}
+.tg{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--surf2);
+  border:1px solid var(--line);color:var(--mut)}
+.feat{border-left:3px solid var(--blu);padding:2px 0 2px 11px;margin-bottom:12px}
+.feat h4{font-size:14px;font-weight:700;margin-bottom:1px}
+.feat .en{font-size:11px;color:var(--dim);margin-bottom:6px}
+.feat p{font-size:12px;color:#93a1b8;line-height:1.5;margin-bottom:4px}
+.feat p b{color:var(--tx)}
+/* ── ÉTATS ─────────────────────────────────────────── */
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.cbn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 5px;
+  border-radius:var(--r2);border:1.5px solid var(--line2);background:var(--surf2)}
+.cbn i{font-size:19px;font-style:normal;line-height:1}
+.cbn b{font-size:10px;font-weight:700;color:var(--mut)}
+.cbn small{font-size:8px;color:var(--dim);line-height:1.3;text-align:center}
+.cbn.on{border-color:var(--bad);background:#ff6b6b18}
+.cbn.on b{color:var(--bad)}
+
+/* ── OUTIL LANCER ──────────────────────────────────── */
+.szb{padding:9px 11px;border-radius:var(--r2);border:1.5px solid var(--line2);background:var(--surf2);
+  color:var(--mut);font-size:12px;font-weight:700;text-align:left;line-height:1.3}
+.szb small{display:block;font-size:9px;font-weight:500;color:var(--dim)}
+.szb.on{border-color:var(--blu);background:#6fa8ff20;color:var(--blu)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:6px 5px;font-size:10px;color:var(--mut);border-bottom:1px solid var(--line);font-weight:700}
+.tbl td{padding:7px 5px;border-bottom:1px solid var(--line);text-align:center;font-variant-numeric:tabular-nums}
+.tbl td.nm{text-align:left;font-size:11px}
+.tbl tr.hi{background:#6fa8ff1a;outline:1.5px solid var(--blu)}
+
+/* ── PERSOS / ÉDITEUR ──────────────────────────────── */
+.chr{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.chr:last-child{border-bottom:none}
+.chr .av{width:40px;height:40px;border-radius:11px;background:var(--surf2);border:1.5px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto}
+.chr.on .av{border-color:var(--act);background:#3ddc8414}
+.chr .ci{flex:1;min-width:0}
+.chr .ci b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chr .ci small{font-size:11px;color:var(--mut)}
+.ico{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line2);background:var(--surf2);
+  display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex:0 0 auto}
+.f{margin-bottom:11px}
+.f>label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin-bottom:5px}
+.f>label .hint{font-weight:500;color:var(--dim)}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--surf2);
+  border:1.5px solid var(--line2);border-radius:var(--r2);padding:11px 12px;font-size:16px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blu)}
+textarea{min-height:76px;resize:vertical;line-height:1.5}
+select{appearance:none;-webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#9aa7ba 50%),linear-gradient(135deg,#9aa7ba 50%,transparent 50%);
+  background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;padding-right:34px}
+.fr{display:flex;gap:9px}
+.fr>.f{flex:1;min-width:0}
+.sw{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.sw .sl{flex:1;font-size:13px;font-weight:600}
+.sw .sl small{display:block;font-size:11px;color:var(--dim);font-weight:400}
+.tgl{width:48px;height:28px;border-radius:16px;background:var(--surf2);border:1.5px solid var(--line2);
+  position:relative;flex:0 0 auto;padding:0;transition:background .15s,border-color .15s}
+.tgl::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:var(--dim);transition:transform .15s,background .15s}
+.tgl.on{background:#3ddc8426;border-color:var(--act)}
+.tgl.on::after{transform:translateX(20px);background:var(--act)}
+.item{border:1px solid var(--line);border-radius:var(--r2);margin-bottom:9px;overflow:hidden;background:var(--surf2)}
+.item>.ih{display:flex;align-items:center;gap:9px;padding:10px 12px}
+.item>.ih .it{flex:1;min-width:0;font-size:13px;font-weight:700}
+.item>.ih .it small{display:block;font-size:11px;color:var(--dim);font-weight:500}
+.item>.ib{display:none;padding:12px;border-top:1px solid var(--line);background:var(--surf)}
+.item.open>.ib{display:block}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+
+/* ── MODALES / TOAST ───────────────────────────────── */
+.mdl{position:fixed;inset:0;z-index:200;background:rgba(4,7,12,.8);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center}
+.mdl.open{display:flex}
+.mdl>.mc{width:100%;max-width:520px;background:var(--surf);border:1px solid var(--line);
+  border-radius:20px 20px 0 0;padding:16px 16px calc(18px + var(--safeb));max-height:92vh;overflow-y:auto}
+.mh{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.mh b{flex:1;font-size:16px}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.kp button{min-height:58px;border-radius:12px;border:1.5px solid var(--line2);background:var(--surf2);
+  font-size:22px;font-weight:700}
+.kpv{text-align:center;font-size:36px;font-weight:800;padding:10px 0 16px;font-variant-numeric:tabular-nums}
+#toast{position:fixed;left:50%;bottom:calc(84px + var(--safeb));transform:translateX(-50%) translateY(16px);
+  z-index:300;background:#e8eef8;color:#0b0f16;padding:11px 18px;border-radius:24px;font-size:13px;
+  font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#zen{position:fixed;right:12px;bottom:calc(76px + var(--safeb));z-index:95;width:40px;height:40px;
+  border-radius:50%;border:1.5px solid var(--line2);background:rgba(22,28,38,.92);font-size:15px;
+  display:flex;align-items:center;justify-content:center;padding:0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(min-width:640px){.tab{max-width:620px;margin:0 auto}}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div id="hdr-top">
+    <div id="hdr-nm"></div>
+    <div id="hdr-hp"></div>
+  </div>
+  <div id="hdr-bar"><i></i></div>
+  <div id="hdr-chips"></div>
+</header>
+
+<main>
+  <section class="tab on" id="t-tour"></section>
+  <section class="tab" id="t-actions"></section>
+  <section class="tab" id="t-fiche"></section>
+  <section class="tab" id="t-lancer"></section>
+  <section class="tab" id="t-perso"></section>
+</main>
+
+<button id="zen" onclick="toggleZen()">⛶</button>
+
+<nav id="nav">
+  <button class="nb on" data-t="tour"><i>🎯</i>Tour</button>
+  <button class="nb" data-t="actions"><i>⚔️</i>Actions</button>
+  <button class="nb" data-t="fiche"><i>📖</i>Fiche</button>
+  <button class="nb" data-t="lancer"><i>🏋️</i>Lancer</button>
+  <button class="nb" data-t="perso"><i>👤</i>Persos</button>
+</nav>
+
+<div class="mdl" id="mdl"><div class="mc" id="mdl-c"></div></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ══════════════════════════════════════════════════════════
+   MOTEUR — stockage, formules, calculs
+   ══════════════════════════════════════════════════════════ */
+var APP_VER='2.0';
+var KEY='fdc.v2', MEM={}, DB=null, UI={tab:'tour',open:{action:1,bonus:1,reaction:1,free:0},
+  onlyPossible:false,zen:false,edit:null,condOpen:false};
+
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}
+
+var saveT=null;
+function save(){clearTimeout(saveT);saveT=setTimeout(function(){
+  try{lsSet(KEY,JSON.stringify(DB));}catch(e){toast('Sauvegarde impossible');}},180);}
+
+function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function C(){return DB.chars.filter(function(x){return x.id===DB.active;})[0]||DB.chars[0];}
+function T(){return C().st;}
+
+/* ── nombres & unités ───────────────────────────────── */
+function mod(v){return Math.floor((v-10)/2);}
+function sgn(n){return (n>=0?'+':'−')+Math.abs(n);}
+function m(v){return String(Math.round(v*10)/10).replace('.',',')+'m';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(ch){
+  return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[ch];});}
+
+/* ── variables disponibles dans les formules ────────── */
+function V(c){
+  c=c||C();var s=c.stats,lv=c.level;
+  var pb=1+Math.ceil(lv/4);
+  var rd=c.rageDmg&&c.rageDmg[lv]!=null?c.rageDmg[lv]:0;
+  var v={FOR:mod(s.str),DEX:mod(s.dex),CON:mod(s.con),INT:mod(s.int),SAG:mod(s.wis),CHA:mod(s.cha),
+    PB:pb,NIV:lv,RD:rd,VIT:c.speed||9};
+  v.ATH=v.FOR+pb;v.DD=8+pb+v.FOR;
+  v.DM=v.FOR+(c.st.rage?rd:0);
+  return v;
+}
+function pvMax(c){c=c||C();var t=c.hpTable||{};if(t[c.level]!=null)return t[c.level];
+  var ks=Object.keys(t).map(Number).filter(function(k){return k<=c.level;});
+  if(ks.length)return t[Math.max.apply(null,ks)];return c.hpMax||1;}
+function acVal(c){c=c||C();var v=V(c);return num(c.acF||'10+DEX+CON',v)+(c.st.shield?(c.shieldAC||2):0);}
+
+/* ── évaluateur arithmétique (+ − × parenthèses) ─────── */
+function num(expr,v){
+  if(expr==null||expr==='')return 0;
+  if(typeof expr==='number')return expr;
+  var s=String(expr),i=0;
+  function ws(){while(s[i]===' ')i++;}
+  function prim(){ws();
+    if(s[i]==='('){i++;var r=add();ws();if(s[i]===')')i++;return r;}
+    if(s[i]==='-'){i++;return -prim();}
+    if(s[i]==='+'){i++;return prim();}
+    var st=i;while(i<s.length&&/[A-Za-z0-9_.]/.test(s[i]))i++;
+    var tk=s.slice(st,i);if(tk==='')  {i++;return 0;}
+    if(/^[0-9.]+$/.test(tk))return parseFloat(tk);
+    var up=tk.toUpperCase();return v&&v[up]!=null?v[up]:0;}
+  function mul(){var r=prim();for(;;){ws();
+    if(s[i]==='*'){i++;r*=prim();}else if(s[i]==='/'){i++;var d=prim();r=d?r/d:0;}else return r;}}
+  function add(){var r=mul();for(;;){ws();
+    if(s[i]==='+'){i++;r+=mul();}else if(s[i]==='-'){i++;r-=mul();}else return r;}}
+  var out=add();return isNaN(out)?0:out;
+}
+
+/* ── dégâts : { dés:{"6|feu":n}, plat:n } ───────────── */
+var ELEM={tonnerre:'⚡',feu:'🔥',froid:'❄️',foudre:'🌩️',acide:'☠️',radiant:'✨',necrotique:'💀',poison:'🧪'};
+function newD(){return{d:{},f:0};}
+function addDice(o,n,faces,tag){var k=faces+'|'+(tag||'');o.d[k]=(o.d[k]||0)+n;}
+function parseD(expr,v,out){
+  out=out||newD();if(expr==null||expr==='')return out;
+  var parts=String(expr).replace(/−/g,'-').split(/(?=[+-])/);
+  parts.forEach(function(p){
+    p=p.trim();if(!p)return;
+    var neg=p[0]==='-';if(p[0]==='+'||p[0]==='-')p=p.slice(1).trim();
+    var mm=p.match(/^(\d*)d(\d+)(?:@([A-Za-zéèêàûôî]+))?$/i);
+    if(mm){var n=(mm[1]===''?1:parseInt(mm[1],10))*(neg?-1:1);addDice(out,n,mm[2],mm[3]?mm[3].toLowerCase():'');}
+    else{var q=num(p,v);out.f+=neg?-q:q;}
+  });
+  return out;
+}
+function scaleDice(o,k){var r=newD();r.f=o.f;for(var key in o.d)r.d[key]=o.d[key]*k;return r;}
+function mergeD(a,b){for(var k in b.d)a.d[k]=(a.d[k]||0)+b.d[k];a.f+=b.f;return a;}
+function fmtD(o){
+  var keys=Object.keys(o.d).filter(function(k){return o.d[k]!==0;});
+  keys.sort(function(a,b){var ta=a.split('|')[1],tb=b.split('|')[1];
+    if(!ta&&tb)return -1;if(ta&&!tb)return 1;return parseInt(b)-parseInt(a);});
+  var s=keys.map(function(k){var p=k.split('|');
+    return o.d[k]+'d'+p[0]+(p[1]?(ELEM[p[1]]||'·'+p[1]):'');}).join('+');
+  if(o.f)s+=(o.f>0?'+':'−')+Math.abs(o.f);
+  return s||'—';
+}
+
+/* ── armes ──────────────────────────────────────────── */
+function wpnById(c,id){var a=(c||C()).weapons;for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null;}
+function heldW(c){c=c||C();return wpnById(c,c.st.wpn)||c.weapons[0];}
+function twoHanded(c){c=c||C();return !c.st.shield&&c.st.twoH;}
+function wBlocked(c,w){return !!(c.st.shield&&w.needsTwoHands);}
+function reach(c,w,react){
+  c=c||C();if(w.category!=='melee')return null;
+  var r=1.5+(w.reach||0);
+  if(c.st.rage)r+=(c.reachRage||0);
+  if(!react)r+=(c.reachTurn||0);
+  return r;
+}
+function rangeTxt(c,w,thrown){
+  if(w.category==='ranged'||thrown){
+    if(w.range)return w.range;
+    if(w.thrownFromReach){var b=reach(c,w,false)||1.5;return m(b+6)+' / '+m(b+18);}
+    return '—';
+  }
+  return m(reach(c,w,false))+' · réac '+m(reach(c,w,true));
+}
+function wDice(c,w,thrown){
+  var d=w.dice;
+  if(!thrown&&w.versatile&&twoHanded(c))d=w.versatile;
+  return d;
+}
+function dmgOf(c,w,o){
+  c=c||C();o=o||{};var v=V(c),st=c.st,out=newD();
+  var base=parseD(o.dice||wDice(c,w,o.thrown),v);
+  if(st.rage&&w.rageDouble!==false&&c.rageDoubleDice)base=scaleDice(base,2);
+  mergeD(out,base);
+  if(st.rage&&st.feWpn===w.id&&w.fe!==false&&c.feDice)parseD(c.feDice+'@'+st.feEl,v,out);
+  if(o.extra)parseD(o.extra,v,out);
+  out.f+=v.FOR+(st.rage?v.RD:0);
+  return out;
+}
+function surpTxt(c){c=c||C();return (c.st.surprise&&c.surpriseDice)?('+'+c.surpriseDice+' au 1er toucher'):'';}
+function dmgTxt(c,w,o){o=o||{};var s=fmtD(dmgOf(c,w,o));
+  return (o.count>1?o.count+'×('+s+')':s);}
+
+/* ── interpolation {DD} {ATH} {PB} … ────────────────── */
+function interp(s,c){
+  c=c||C();var v=V(c);
+  return String(s||'').replace(/\{(\w+)\}/g,function(_,k){
+    var K=k.toUpperCase();
+    if(K==='POR')return m(reach(c,heldW(c),false)||0);
+    if(K==='POR_R')return m(reach(c,heldW(c),true)||0);
+    if(K==='ARME')return heldW(c).name;
+    if(K==='FE')return (ELEM[c.st.feEl]||'')+' '+cap(c.st.feEl);
+    if(K==='DDS')return String(v.DD);
+    if(v[K]!=null)return (K==='ATH'||K==='FOR'||K==='DEX'||K==='CON'||K==='SAG'||K==='CHA'||K==='INT')?sgn(v[K]):String(v[K]);
+    return '{'+k+'}';});
+}
+function cap(s){s=String(s||'');return s.charAt(0).toUpperCase()+s.slice(1);}
+
+/* ── disponibilité d'une action ─────────────────────── */
+function avail(c,a){
+  c=c||C();var st=c.st,r=a.req||{};
+  if(r.lv&&c.level<r.lv)return 'niveau '+r.lv+' requis';
+  if(r.rage&&!st.rage)return 'rage requise';
+  if(r.noRage&&st.rage)return 'impossible en rage';
+  if(r.reckless&&!st.reckless)return 'attaque téméraire requise';
+  if(r.noShield&&st.shield)return 'bouclier équipé';
+  if(r.grapple&&!st.grappled)return 'aucune créature agrippée';
+  if(r.wpn&&r.wpn.length&&r.wpn.indexOf(st.wpn)<0){
+    var w=wpnById(c,r.wpn[0]);return (w?w.name:r.wpn[0])+' requise';}
+  if(r.pool&&(st.pool[r.pool]||0)<=0)return 'épuisé';
+  return null;
+}
+function spent(c,a){
+  var st=c.st;
+  if(a.type==='action')return st.used.action;
+  if(a.type==='bonus')return st.used.ba;
+  if(a.type==='reaction')return st.used.reaction;
+  if(a.free&&st.used[a.free])return true;
+  return false;
+}
+/* ══════════════════════════════════════════════════════════
+   DONNÉES — états, table de lancer, personnage par défaut
+   ══════════════════════════════════════════════════════════ */
+var COND=[
+ {id:'aveugle',e:'🙈',l:'Aveuglé',d:"Désav. attaques · Avantage contre toi"},
+ {id:'charme',e:'💜',l:'Charmé',d:"Ne peut attaquer le charmeur"},
+ {id:'assourdi',e:'🔇',l:'Assourdi',d:"Échec auto des tests auditifs"},
+ {id:'epuise',e:'😩',l:'Épuisé',d:"−2 par degré aux d20 · Mort au 6"},
+ {id:'effraye',e:'😱',l:'Effrayé',d:"Désav. si source visible · Ne peut approcher"},
+ {id:'agrippe',e:'✊',l:'Agrippé',d:"Vitesse 0 · Désav. contre les autres cibles"},
+ {id:'neutralise',e:'🚫',l:'Neutralisé',d:"Ni action, ni AB, ni réaction"},
+ {id:'invisible',e:'👻',l:'Invisible',d:"Avantage attaques · Désav. contre toi"},
+ {id:'paralyse',e:'💀',l:'Paralysé',d:"Neutralisé · Critiques à 1,5m"},
+ {id:'petrifie',e:'🗿',l:'Pétrifié',d:"Neutralisé · Résistances · Imm. poison"},
+ {id:'empoisonne',e:'☠️',l:'Empoisonné',d:"Désav. attaques et tests"},
+ {id:'aterre',e:'⬇️',l:'À terre',d:"Désav. attaques · Avantage ennemis à 1,5m"},
+ {id:'entrave',e:'⛓️',l:'Entravé',d:"Vitesse 0 · Désav. attaques et sauv. DEX"},
+ {id:'etourdi',e:'💫',l:'Étourdi',d:"Neutralisé · Avantage contre toi"},
+ {id:'inconscient',e:'💤',l:'Inconscient',d:"Neutralisé + à terre · Critiques à 1,5m"}
+];
+var TT=[
+ {t:'Très Petite / Petite',p:'< 19 kg',x:'chat, corbeau, lutin',nr:{d:18,h:12,g:'4d6'},r:{d:21,h:15,g:'5d6'}},
+ {t:'Petite',p:'19–38 kg',x:'gobelin, kobold',nr:{d:15,h:9,g:'3d6'},r:{d:18,h:12,g:'4d6'}},
+ {t:'Petite / Moyenne',p:'38–75 kg',x:'rat géant, faucon',nr:{d:12,h:6,g:'2d6'},r:{d:15,h:9,g:'3d6'}},
+ {t:'Moyenne',p:'75–150 kg',x:'humain adulte',nr:{d:9,h:3,g:'1d6'},r:{d:12,h:6,g:'2d6'}},
+ {t:'Moyenne / Grande',p:'150–300 kg',x:'ours noir',nr:{d:6,h:1.5,g:'0'},r:{d:9,h:3,g:'1d6'}},
+ {t:'Grande',p:'300–600 kg',x:'cheval',nr:{d:3,h:0,g:'0'},r:{d:6,h:1.5,g:'0'}},
+ {t:'Grande / Très Grande',p:'600–1 200 kg',x:'géant des collines',nr:null,r:{d:3,h:0,g:'0'}}
+];
+var CPLX=[{l:'Simple',v:0,c:'#3ddc84'},{l:'Moyenne +1',v:1,c:'#ffcb45'},{l:'Difficile +2',v:2,c:'#ff6b6b'}];
+
+var DEF_ST={pv:122,tmp:0,rage:false,reckless:false,shield:false,twoH:true,
+  wpn:'fork',feWpn:'fork',feEl:'tonnerre',turn:1,surprise:true,grappled:false,tSize:3,tCplx:2,
+  used:{action:0,ba:0,reaction:0,traction:0,wpnChg:0},pool:{rage:4,dv:9,bolas:1},cond:{}};
+
+var DEF_CHAR={
+ id:'barb-geant',icon:'🪓',name:'Barbare Voie du Géant',
+ sub:'Bugbear · Barbare 9 · Voie du Géant (Path of the Giant)',
+ level:9,lvMin:8,lvMax:10,
+ stats:{str:20,dex:20,con:20,int:8,wis:16,cha:8},
+ saveProf:['str','con'],
+ hpTable:{8:110,9:122,10:134},
+ acF:'10+DEX+CON',shieldAC:2,speed:12,hitDie:'d12',
+ rageDmg:{8:2,9:3,10:3},
+ rageDoubleDice:true,feDice:'1d6',surpriseDice:'2d6',
+ reachTurn:1.5,reachRage:1.5,attacks:2,
+ rageTags:["🛡️ Rés. contondant / perforant / tranchant","💪 Avantage aux tests et sauv. de Force",
+   "📏 +1,5m de portée (réactions incluses)","🏔️ Taille Grande — 4 cases",
+   "🎲 Dés d'arme doublés (règle MJ)","👊 Poussée 1,5m à chaque toucher",
+   "⚔️ +{RD} dégâts","🦘 Bond instinctif : déplacement gratuit"],
+ weapons:[
+  {id:'fork',icon:'🔱',name:'Fourche militaire',en:'Military Fork',dice:'2d6',category:'melee',
+   reach:1.5,needsTwoHands:true,mastery:'Set (Parade)',
+   eff:"Parade en réaction quand une créature entre · Manche en AB",thrownFromReach:true},
+  {id:'nag',icon:'⚔️',name:'Naginata',en:'Glaive',dice:'1d10',category:'melee',
+   reach:1.5,needsTwoHands:true,mastery:'Renversement (Topple)',
+   eff:"Sauv. CON DD {DD} ou À TERRE",thrownFromReach:true},
+  {id:'pike',icon:'🗡️',name:'Pique',en:'Pike',dice:'1d10',category:'melee',
+   reach:1.5,needsTwoHands:true,mastery:'Poussée (Push)',eff:"REPOUSSÉE de 3m",thrownFromReach:true},
+  {id:'wh',icon:'🔨',name:'Marteau de guerre',en:'Warhammer',dice:'1d8',versatile:'1d10',category:'melee',
+   reach:0,mastery:'Poussée (Push)',eff:"REPOUSSÉE de 3m",thrownFromReach:true},
+  {id:'jav',icon:'🎯',name:'Javeline',en:'Javelin',dice:'1d6',category:'thrown',range:'9m / 36m',
+   rageDouble:false,mastery:'Ralentissement (Slow)',eff:"Vitesse −3m jusqu'à la fin de son prochain tour"}
+ ],
+ pools:[
+  {id:'rage',icon:'🔥',name:'Rage',max:'4',recharge:'Repos long'},
+  {id:'dv',icon:'🎲',name:'Dés de vie',sub:'d12',max:'NIV',recharge:'Repos long'},
+  {id:'bolas',icon:'⚫',name:'Bolas',max:'1',recharge:'Par combat'}
+ ],
+ actions:[
+  {id:'bolas',type:'action',name:'Bolas',range:'6m / 18m',dmg:'1d4+FOR',pool:'bolas',
+   eff:"Sauv. DEX DD {DD} ou À TERRE + ENTRAVÉE jusqu'à la fin de son prochain tour · Se libérer : action (Athlétisme ou Acrobaties DD {DD})"},
+  {id:'grapple',type:'action',name:'Agripper',en:'Grapple',range:'{POR_M}',
+   eff:"Frappe à mains nues · Athlétisme {ATH} contesté (avantage en rage) → AGRIPPÉE, vitesse 0"},
+  {id:'throw',type:'action',name:'Lancer la créature agrippée',tool:'throw',req:{grapple:1},
+   eff:"Jet de Force contesté · Portée et hauteur selon le poids — voir l'onglet Lancer"},
+  {id:'brutal1',type:'action',name:'Frappe brutale — Coup de force',en:'Forceful Blow',tag:'FRAPPE',
+   color:'#ff8a4c',dmg:'1d10',range:'{POR}',req:{lv:9,reckless:1},
+   eff:"Cible repoussée de 4,5m, puis tu la suis de 6m sans provoquer d'attaque d'opportunité · Se cumule avec la poussée de 1,5m"},
+  {id:'brutal2',type:'action',name:'Frappe brutale — Coup au jarret',en:'Hamstring Blow',tag:'FRAPPE',
+   color:'#ff8a4c',dmg:'1d10',range:'{POR}',req:{lv:9,reckless:1},
+   eff:"Vitesse de la cible −4,5m jusqu'au début de ton prochain tour"},
+  {id:'manche',type:'bonus',name:'Attaque de manche',en:'Polearm Master',wpn:'fork',dice:'1d6',
+   req:{wpn:['fork']},eff:"3e attaque du tour · Après une attaque d'action avec la fourche"},
+  {id:'disarm',type:'bonus',name:'Désarmement',en:'Scourge Master',range:'≤ portée arme',
+   eff:"Après un toucher avec le grappin · FOR ou DEX contesté · L'objet tombe à mi-chemin"},
+  {id:'fe-el',type:'bonus',name:"Changer l'élément du Fendoir",en:'Elemental Cleaver',req:{rage:1},
+   eff:"Fendoir actuel : {FE} · Se règle dans l'onglet Tour"},
+  {id:'fe-w',type:'bonus',name:"Déplacer le Fendoir sur une autre arme",req:{rage:1},
+   eff:"Consomme l'action bonus du tour"},
+  {id:'impel',type:'bonus',name:'Impulsion titanesque',en:'Mighty Impel',range:'{POR}',req:{lv:10,rage:1},
+   eff:"Créature de taille M ou moins → espace libre à 9m · Non consentante : sauv. Force DD {DD} · Dans le vide : chute + À TERRE"},
+  {id:'parade',type:'reaction',name:'Parade — la créature ENTRE dans ta portée',en:'Set',wpn:'fork',
+   req:{wpn:['fork'],noShield:1},eff:"Compte comme une attaque d'opportunité → Sentinelle : vitesse 0"},
+  {id:'ao-quit',type:'reaction',name:'Attaque d\u2019opportunité — la créature QUITTE ta portée',wpn:'held',
+   range:'{POR_R}',eff:"Sentinelle : vitesse 0 au toucher · Fonctionne même si elle se désengage"},
+  {id:'ao-ally',type:'reaction',name:'Attaque d\u2019opportunité — un allié est attaqué',wpn:'held',
+   range:'{POR_R}',eff:"Sentinelle : la cible attaque un allié à portée de toi · Vitesse 0 au toucher"},
+  {id:'hold',type:'reaction',name:'Tenir le terrain',en:'Hold the Ground',range:'sur toi',
+   eff:"Quand une créature te déplace sans que tu utilises ton déplacement : réduis la distance subie de jusqu'à {VIT}"},
+  {id:'drop',type:'reaction',name:'Largage du grappin',eff:"Libère la créature accrochée · Pas d'attaque"},
+  {id:'trac',type:'free',name:'Traction du grappin',free:'traction',
+   eff:"1 fois par tour · Ramène la créature accrochée de 1,5m vers toi (7,5m → 1,5m)"},
+  {id:'push',type:'free',name:'Poussée — Ravages du Géant',req:{rage:1},range:'chaque toucher',
+   eff:"Repousse de 1,5m dans la direction de ton choix · Automatique, sauf taille TG+ : sauv. FOR DD {DD}"},
+  {id:'swap',type:'free',name:"Changement d'arme",free:'wpnChg',
+   eff:"1 fois par tour · Le Fendoir reste sur l'arme infusée"}
+ ],
+ feats:[
+  {n:"Volonté du mercenaire de l'Épée Libre",en:"Free Sword Mercenary's Will · Grim Hollow PG 2024 · don d'origine",
+   b:[["Tenir le terrain (Hold the Ground)","Quand une créature te déplace sans que tu utilises ton déplacement, tu peux prendre une <b>réaction</b> pour réduire la distance de jusqu'à ta Vitesse ({VIT})."],
+      ["Résolu (Resolute)","<b>Avantage à toutes les sauvegardes qui appliqueraient un état</b> — À terre, Agrippé, Entravé, Effrayé, Charmé, Étourdi, Paralysé…"]]},
+  {n:"Sentinelle",en:"Sentinel",
+   b:[["","Au toucher d'une attaque d'opportunité, la vitesse de la cible tombe à <b>0</b> pour le reste du tour."],
+      ["","Tu peux faire une attaque d'opportunité même si la créature se <b>désengage</b>."],
+      ["","Quand une créature à portée attaque un <b>allié</b> (et non toi), tu peux l'attaquer en réaction."]]},
+  {n:"Maître d'hast",en:"Polearm Master",
+   b:[["","Attaque de manche en <b>action bonus</b> (1d6 + mod. FOR) après une attaque avec l'arme d'hast."],
+      ["","Attaque d'opportunité quand une créature <b>entre</b> dans ta portée."]]},
+  {n:"Maître du fouet",en:"Scourge Master",
+   b:[["","Désarmement en action bonus après un toucher avec le grappin."]]}
+ ],
+ rules:[
+  ["⚠️ Une seule réaction par tour","Parade OU attaque d'opportunité Sentinelle OU Tenir le terrain OU Largage — jamais deux"],
+  ["⚠️ Tour de rage","L'action bonus sert à rager → pas de Manche ni de Désarmement ce tour-là"],
+  ["⚠️ Action bonus : une seule option","Manche OU Désarmement OU changement de Fendoir"],
+  ["⚠️ Longs Membres","+1,5m pendant TON tour uniquement — pas sur les réactions"],
+  ["✓ Stature Géante","+1,5m en rage, réactions comprises"],
+  ["⚠️ Frappe brutale","Exige l'Attaque téméraire · Tu renonces à l'avantage sur CETTE attaque"],
+  ["⚠️ Manche","Fourche militaire uniquement (réglable dans l'éditeur)"],
+  ["⚠️ Fendoir lancé","Disponible seulement si tu tiens l'arme qui porte le Fendoir"],
+  ["⚠️ Marteau versatile","1d8 à une main ou avec bouclier · 1d10 à deux mains"],
+  ["✓ Résolu","Avantage sur toute sauvegarde qui appliquerait un état"],
+  ["✓ Grappin à chaîne","Portée fixe 7,5m · Athlétisme {ATH} contesté (avantage en rage)"],
+  ["✓ Ravages du Géant","Chaque attaque de mêlée peut repousser la cible de 1,5m"]
+ ],
+ st:clone(DEF_ST)
+};
+/* ══════════════════════════════════════════════════════════
+   RENDU — en-tête, Tour, Actions, Fiche, Lancer
+   ══════════════════════════════════════════════════════════ */
+function $(id){return document.getElementById(id);}
+var toastT=null;
+function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on');},1900);}
+
+function hpCol(p){return p>50?'var(--ok)':p>25?'var(--warn)':'var(--bad)';}
+function ECO(){return{action:{l:'Action',i:'⚡',c:'var(--act)'},ba:{l:'Bonus',i:'🔶',c:'var(--bon)'},
+  reaction:{l:'Réaction',i:'🔷',c:'var(--rea)'}};}
+
+function renderAll(){
+  var c=C();
+  document.title=c.icon+' '+c.name;
+  renderHdr();
+  renderTour();
+  if(UI.tab==='actions')renderActions();
+  else if(UI.tab==='fiche')renderFiche();
+  else if(UI.tab==='lancer')renderLancer();
+  else if(UI.tab==='perso')renderPerso();
+  save();
+}
+
+/* ── EN-TÊTE ────────────────────────────────────────── */
+function renderHdr(){
+  var c=C(),st=c.st,mx=pvMax(c),p=Math.max(0,Math.min(100,st.pv/mx*100)),col=hpCol(p);
+  $('hdr-nm').innerHTML='<span>'+esc(c.icon+' '+c.name)+'</span><small>CA '+acVal(c)
+    +' · DD '+V(c).DD+' · Athlétisme '+sgn(V(c).ATH)+' · Tour '+st.turn+'</small>';
+  $('hdr-hp').innerHTML='<span style="color:'+col+'">'+st.pv+'</span>'
+    +'<span style="color:var(--dim);font-size:12px">/'+mx+'</span>';
+  var bar=$('hdr-bar').firstElementChild;bar.style.width=p+'%';bar.style.background=col;
+  var out=[];
+  if(st.rage)out.push(chip('👹 Rage','var(--rage)',1));
+  if(st.reckless)out.push(chip('⚡ Téméraire','var(--rage)',1));
+  if(st.shield)out.push(chip('🛡️ Bouclier','var(--fre)',1));
+  if(st.surprise)out.push(chip('⭐ Surprise','var(--vio)',1));
+  var E=ECO();['action','ba','reaction'].forEach(function(k){
+    out.push(chip(E[k].l,E[k].c,!st.used[k]));});
+  var ac=COND.filter(function(x){return st.cond[x.id];});
+  if(ac.length)out.push(chip('🩹 '+ac.map(function(x){return x.l;}).join(', '),'var(--bad)',1));
+  $('hdr-chips').innerHTML=out.join('');
+}
+function chip(t,c,on){return '<span class="chip'+(on?'':' off')+'"'+(on?' style="color:'+c+';border-color:'+c+';background:'+c+'1a"':'')+'>'+esc(t)+'</span>';}
+
+/* ── ONGLET TOUR ────────────────────────────────────── */
+function renderTour(){
+  var c=C(),st=c.st,v=V(c),mx=pvMax(c),p=Math.max(0,Math.min(100,st.pv/mx*100)),col=hpCol(p),h='';
+
+  h+='<div class="card"><div class="cb">'
+   +'<div class="hpbig"><b style="color:'+col+'">'+st.pv+'</b><span>/ '+mx+'</span>'
+   +'<em style="color:'+col+'">'+(st.pv===0?'💀 Inconscient':p<=25?'⚠️ Critique':'')+'</em></div>'
+   +'<div class="hpbar"><i style="width:'+p+'%;background:'+col+'"></i></div>'
+   +'<div class="step">'
+   +'<button class="mi hold" data-d="-5">−5</button>'
+   +'<button class="mi hold" data-d="-1">−1</button>'
+   +'<button class="eq" onclick="askPV()">saisir</button>'
+   +'<button class="pl hold" data-d="1">+1</button>'
+   +'<button class="pl hold" data-d="5">+5</button>'
+   +'</div></div></div>';
+
+  var E=ECO();
+  h+='<div class="card"><div class="ch">🎯 Économie d\u2019action<span class="sub">Tour '+st.turn+'</span></div><div class="cb">'
+   +'<div class="eco">'+['action','ba','reaction'].map(function(k){
+      var u=st.used[k];
+      return '<button onclick="useRes(\''+k+'\')" style="border-color:'+(u?'var(--line2)':E[k].c)
+        +';background:'+(u?'var(--surf2)':E[k].c+'14')+'"><i>'+E[k].i+'</i>'
+        +'<b style="color:'+(u?'var(--dim)':E[k].c)+(u?';text-decoration:line-through':'')+'">'+E[k].l+'</b>'
+        +'<small>'+(u?'utilisée':'libre')+'</small></button>';}).join('')+'</div>'
+   +'<div class="pills">'
+   +pill('🔗 Traction',!st.used.traction,'var(--fre)',"useRes('traction')")
+   +pill('🔁 Changement d\u2019arme',!st.used.wpnChg,'var(--fre)',"useRes('wpnChg')")
+   +pill('⭐ Surprise +'+(c.surpriseDice||'2d6'),st.surprise,'var(--vio)',"tog('surprise')")
+   +pill('🤜 Créature agrippée',st.grappled,'var(--blu)',"tog('grappled')")
+   +'</div>'
+   +'<div class="row" style="margin-top:10px">'
+   +'<button class="btn grow" onclick="nextTurn()" style="border-color:var(--act);color:var(--act)">↻ Tour suivant</button>'
+   +'<button class="btn" onclick="rest(\'court\')">⚔️ Nouveau combat</button>'
+   +'</div></div></div>';
+
+  var nr=(st.pool.rage||0)<=0&&!st.rage;
+  h+='<div class="card"><div class="ch">⚙️ Modes</div><div class="cb">'
+   +'<button class="btn wide" onclick="toggleRage()" '+(nr?'disabled':'')+' style="min-height:62px;font-size:16px;'
+   +'border-color:'+(st.rage?'var(--rage)':nr?'var(--line2)':'#ff6b6b80')+';background:'+(st.rage?'var(--rage)':'var(--surf2)')
+   +';color:'+(st.rage?'#140a0a':nr?'var(--dim)':'var(--rage)')+'">'
+   +(st.rage?'👹 Rage active — cliquer pour arrêter':nr?'💤 Plus de rage disponible':'💤 Entrer en rage')+'</button>'
+   +'<div class="row" style="margin-top:9px">'
+   +sw('⚡ Téméraire',st.reckless,'var(--rage)',"tog('reckless')")
+   +sw('🛡️ Bouclier',st.shield,'var(--fre)',"tog('shield')")
+   +sw('✋ Deux mains',twoHanded(c),'var(--act)',"tog('twoH')")
+   +'</div>'
+   +(st.rage?'<div class="hr"></div><div class="tagl">'+(c.rageTags||[]).map(function(t){
+      return '<span class="tg">'+esc(interp(t,c))+'</span>';}).join('')+'</div>':'')
+   +'</div></div>';
+
+  var w=heldW(c);
+  h+='<div class="card"><div class="ch">⚔️ Arme tenue<span class="sub">'+esc(w.mastery||'')+'</span></div><div class="cb">'
+   +'<div class="wg">'+c.weapons.map(function(x){
+      var on=x.id===st.wpn,no=wBlocked(c,x);
+      var sub=x.id===st.wpn&&x.versatile?(twoHanded(c)?'2M · '+x.versatile:'1M · '+x.dice):(no?'🛡️ bloquée':(x.fe!==false&&st.feWpn===x.id&&st.rage?'Fendoir':''));
+      return '<button class="wb'+(on?' on':'')+(no?' no':'')+'" onclick="setWpn(\''+x.id+'\')">'
+        +'<i>'+x.icon+'</i><b>'+esc(x.name.split(' ')[0])+'</b><small>'+esc(sub||'')+'</small></button>';}).join('')+'</div>'
+   +'<div class="dmgline"><span class="dv" style="color:'+(st.rage?'var(--rage)':'var(--tx)')+'">'
+   +esc(dmgTxt(c,w,{count:c.attacks||2}))+'</span>'
+   +'<span class="dl">'+esc(rangeTxt(c,w))+'</span>'
+   +(surpTxt(c)?'<span class="dl" style="color:var(--vio)">⭐ '+surpTxt(c)+'</span>':'')+'</div>'
+   +(w.eff?'<div class="note" style="margin-top:8px">'+interp(w.eff,c)+'</div>':'')
+   +'<div class="hr"></div>'
+   +'<div class="fr">'
+   +'<div class="f" style="margin:0"><label>Fendoir élémentaire — arme</label>'
+   +'<select onchange="setFE(\'w\',this.value)">'+c.weapons.filter(function(x){return x.fe!==false&&!wBlocked(c,x);})
+     .map(function(x){return '<option value="'+x.id+'"'+(st.feWpn===x.id?' selected':'')+'>'+x.icon+' '+esc(x.name)+'</option>';}).join('')+'</select></div>'
+   +'<div class="f" style="margin:0"><label>Élément</label>'
+   +'<select onchange="setFE(\'e\',this.value)">'+Object.keys(ELEM).map(function(k){
+      return '<option value="'+k+'"'+(st.feEl===k?' selected':'')+'>'+ELEM[k]+' '+cap(k)+'</option>';}).join('')+'</select></div>'
+   +'</div>'
+   +(st.rage?'':'<div class="note" style="margin-top:7px">Le Fendoir ne s\u2019applique qu\u2019en rage.</div>')
+   +'</div></div>';
+
+  h+='<div class="card"><div class="ch">💠 Ressources</div><div class="cb">'
+   +(c.pools||[]).map(function(pl){
+      var mxp=Math.round(num(pl.max,v)),cur=st.pool[pl.id]||0,pips='';
+      if(mxp<=12){for(var i=0;i<mxp;i++)pips+='<button class="pip" onclick="setPool(\''+pl.id+'\','+(i+1)+')" style="'
+        +(i<cur?'border-color:var(--act);background:#3ddc8420;color:var(--act)':'color:var(--dim)')+'">'+(i<cur?'●':'○')+'</button>';}
+      else pips='<span style="font-weight:800">'+cur+' / '+mxp+'</span>';
+      return '<div class="res"><span style="font-size:19px">'+pl.icon+'</span>'
+        +'<span class="rn">'+esc(pl.name)+'<small>'+esc(pl.sub?pl.sub+' · ':'')+esc(pl.recharge||'')+'</small></span>'
+        +'<span class="pips">'+pips+'</span></div>';}).join('')
+   +'</div></div>';
+
+  var nc=COND.filter(function(x){return st.cond[x.id];}).length;
+  h+='<div class="card"><div class="ch" onclick="UI.condOpen=!UI.condOpen;renderTour()" style="cursor:pointer">'
+   +'🩹 États'+(nc?' <span style="color:var(--bad)">('+nc+')</span>':'')+'<span class="sub">'+(UI.condOpen?'▾':'▸')+'</span></div>'
+   +(UI.condOpen?'<div class="cb"><div class="cg">'+COND.map(function(x){
+      return '<button class="cbn'+(st.cond[x.id]?' on':'')+'" onclick="togCond(\''+x.id+'\')">'
+        +'<i>'+x.e+'</i><b>'+x.l+'</b><small>'+esc(x.d)+'</small></button>';}).join('')+'</div></div>':'')
+   +'</div>';
+
+  $('t-tour').innerHTML=h;
+}
+function pill(t,on,c,fn){return '<button class="pill'+(on?' on':'')+'" onclick="'+fn+'"'
+  +(on?' style="background:'+c+';border-color:'+c+'"':'')+'>'+esc(t)+'</button>';}
+function sw(t,on,c,fn){return '<button class="btn grow'+(on?'':'')+'" onclick="'+fn+'" style="font-size:13px;'
+  +(on?'border-color:'+c+';background:'+c+'1a;color:'+c:'')+'">'+esc(t)+'</button>';}
+
+/* ── ONGLET ACTIONS ─────────────────────────────────── */
+function actAttacks(c){
+  var out=[];
+  c.weapons.forEach(function(w){
+    if(wBlocked(c,w))return;
+    var thrown=w.category!=='melee';
+    out.push({id:'atk-'+w.id,type:'action',name:(c.attacks||2)+'× '+w.name,icon:w.icon,
+      _w:w,_count:c.attacks||2,_thrown:thrown,
+      range:rangeTxt(c,w,thrown),eff:(w.eff||'')+(w.mastery?' · Maîtrise : '+w.mastery:''),
+      req:{wpn:[w.id]}});
+  });
+  var st=c.st;
+  if(st.rage&&c.feDice){
+    var fw=wpnById(c,st.feWpn);
+    if(fw&&fw.thrownFromReach!==false)out.push({id:'atk-fe',type:'action',icon:ELEM[st.feEl],
+      name:(c.attacks||2)+'× '+fw.name+' lancée (Fendoir)',_w:fw,_count:c.attacks||2,_thrown:true,
+      range:rangeTxt(c,fw,true),eff:"Retour automatique en main · Dégâts convertis en "+cap(st.feEl),
+      req:{rage:1,wpn:[fw.id]}});
+  }
+  return out;
+}
+function renderActions(){
+  var c=C(),st=c.st,all=actAttacks(c).concat(c.actions||[]),h='';
+  h+='<div class="row" style="margin-bottom:11px">'
+   +'<button class="btn sm grow" onclick="UI.onlyPossible=!UI.onlyPossible;renderActions()" style="'
+   +(UI.onlyPossible?'border-color:var(--act);color:var(--act)':'')+'">'
+   +(UI.onlyPossible?'✓ Seulement ce qui est jouable':'Tout afficher')+'</button>'
+   +'<button class="btn sm" onclick="nextTurn()" style="border-color:var(--act);color:var(--act)">↻ Tour</button></div>';
+  var SEC=[['action','🟢 Action','var(--act)'],['bonus','🟠 Action bonus','var(--bon)'],
+           ['reaction','🟣 Réaction — une seule par tour','var(--rea)'],['free','🟡 Gratuit / passif','var(--fre)']];
+  SEC.forEach(function(s){
+    var list=all.filter(function(a){return a.type===s[0];}),body='',n=0;
+    list.forEach(function(a){
+      var why=avail(c,a),used=spent(c,a);
+      if(UI.onlyPossible&&(why||used))return;
+      if(!why&&!used)n++;
+      body+=arow(c,a,why,used);
+    });
+    if(s[0]==='action'&&st.surprise)
+      body='<div class="banner" style="color:var(--vio);background:#a07bff14;border-color:var(--vio)">⭐ Attaque surprise active : +'
+        +(c.surpriseDice||'2d6')+' sur le premier toucher</div>'+body;
+    if(!body)body='<div class="ar"><div class="bo"><div class="ae">Rien de jouable ici pour l\u2019instant.</div></div></div>';
+    var used=(s[0]==='action'&&st.used.action)||(s[0]==='bonus'&&st.used.ba)||(s[0]==='reaction'&&st.used.reaction);
+    h+='<div class="acc'+(UI.open[s[0]]?' open':'')+'" style="border-color:'+s[2]+'40">'
+      +'<h3 onclick="UI.open[\''+s[0]+'\']=!UI.open[\''+s[0]+'\'];renderActions()" style="background:'+s[2]+'12;color:'+s[2]+'">'
+      +'<span>'+s[1]+'</span><span class="cnt">'+(used?'utilisée':n+' dispo')+' '+(UI.open[s[0]]?'▾':'▸')+'</span></h3>'
+      +'<div class="bd">'+body+'</div></div>';
+  });
+  $('t-actions').innerHTML=h;
+}
+function arow(c,a,why,used){
+  var COL={action:'var(--act)',bonus:'var(--bon)',reaction:'var(--rea)',free:'var(--fre)'};
+  var col=a.color||COL[a.type],tag=a.tag||({action:'ACTION',bonus:'AB',reaction:'RÉAC',free:'LIBRE'})[a.type];
+  var dmg='';
+  if(a._w)dmg=dmgTxt(c,a._w,{count:a._count,thrown:a._thrown});
+  else if(a.wpn){var w=a.wpn==='held'?heldW(c):wpnById(c,a.wpn);
+    if(w)dmg=dmgTxt(c,w,{dice:a.dice,count:a.count||1});}
+  else if(a.dmg)dmg=fmtD(parseD(a.dmg,V(c)));
+  var pool=a.pool?(' · '+(c.st.pool[a.pool]||0)+' restant'):'';
+  var click=(!why&&!used&&(a.pool||a.free||a.tool))?' onclick="doAction(\''+a.id+'\')"':'';
+  var sup=(a._w&&surpTxt(c))?' <span style="color:var(--vio)">· ⭐ '+surpTxt(c)+'</span>':'';
+  return '<div class="ar'+(why||used?' used':'')+'"'+click+'>'
+    +'<span class="tag" style="background:'+col+'">'+tag+'</span><div class="bo">'
+    +'<div class="an" style="color:'+col+'">'+(a.icon?a.icon+' ':'')+esc(a.name)
+    +(a.en?' <span style="font-size:10px;font-weight:500;color:var(--dim)">('+esc(a.en)+')</span>':'')+'</div>'
+    +'<div class="am">'+(a.range?'<span>📍 '+interp(a.range,c)+'</span>':'')
+    +(dmg&&dmg!=='—'?'<span>⚔️ <b style="color:'+(c.st.rage?'var(--rage)':'var(--tx)')+'">'+esc(dmg)+'</b></span>':'')+'</div>'
+    +'<div class="ae">'+interp(a.eff||'',c)+esc(pool)+sup
+    +(why?' <span style="color:var(--warn)">· '+esc(why)+'</span>':'')
+    +(used?' <span style="color:var(--dim)">· déjà utilisée</span>':'')+'</div></div></div>';
+}
+/* ── ONGLET FICHE ───────────────────────────────────── */
+function renderFiche(){
+  var c=C(),st=c.st,v=V(c),h='';
+  h+='<div class="card"><div class="ch">🛡️ Défenses</div><div class="cb"><div class="grid3">'
+   +box('Classe d\u2019armure',acVal(c),st.shield?'bouclier inclus':'sans bouclier')
+   +box('Points de vie',pvMax(c),'dés '+(c.hitDie||'d8'))
+   +box('Vitesse',m(c.speed||9),st.rage?'+ bond':'')
+   +box('Initiative',sgn(v.DEX),'avantage')
+   +box('DD de tes effets',v.DD,'8 + PB + FOR')
+   +box('Athlétisme',sgn(v.ATH),'avantage en rage')
+   +'</div></div></div>';
+
+  var SN={str:['FOR','Force'],dex:['DEX','Dextérité'],con:['CON','Constitution'],
+          int:['INT','Intelligence'],wis:['SAG','Sagesse'],cha:['CHA','Charisme']};
+  h+='<div class="card"><div class="ch">🎲 Caractéristiques et sauvegardes</div><div class="cb"><div class="grid3">'
+   +Object.keys(SN).map(function(k){
+      var pr=(c.saveProf||[]).indexOf(k)>=0,sv=mod(c.stats[k])+(pr?v.PB:0);
+      return '<div class="box" style="'+(pr?'border-color:#ffcb4550':'')+'">'
+        +'<div class="bl">'+SN[k][0]+' '+c.stats[k]+'</div>'
+        +'<div class="bv" style="color:'+(pr?'var(--fre)':'var(--tx)')+'">'+sgn(sv)+'</div>'
+        +'<div class="bs">test '+sgn(mod(c.stats[k]))+(pr?' · maîtrise':'')+'</div></div>';}).join('')
+   +'</div>'
+   +'<div class="note" style="margin-top:9px"><b style="color:var(--blu)">Résolu</b> — avantage sur toute sauvegarde qui appliquerait un état, quelle que soit la caractéristique.'
+   +(st.rage?' <b style="color:var(--rage)">Rage</b> — avantage aux sauvegardes de Force.':'')+'</div>'
+   +'</div></div>';
+
+  var rows=c.weapons.map(function(w){
+    if(w.category==='melee')return[w.icon+' '+w.name,m(reach(c,w,false)),'réaction '+m(reach(c,w,true))];
+    return[w.icon+' '+w.name,w.range||'—',w.mastery||''];});
+  if(st.rage&&c.feDice){var fw=wpnById(c,st.feWpn);
+    if(fw)rows.push([ELEM[st.feEl]+' '+fw.name+' lancée (Fendoir)',rangeTxt(c,fw,true),'retour automatique']);}
+  rows.push(['⛓️ Grappin à chaîne','7,5m','portée fixe']);
+  rows.push(['🤜 Agripper',m(1.5+(c.reachTurn||0)+(st.rage?(c.reachRage||0):0)),'ton tour']);
+  h+='<div class="card"><div class="ch">📐 Portées'+(st.rage?' <span style="color:var(--rage)">en rage</span>':'')+'</div><div class="cb">'
+   +'<div class="grid2">'+rows.map(function(r){return box(r[0],r[1],r[2]);}).join('')+'</div>'
+   +'<div class="note" style="margin-top:9px">Longs Membres +1,5m : ton tour uniquement, jamais sur les réactions. Stature Géante +1,5m : en rage, réactions comprises.</div>'
+   +'</div></div>';
+
+  h+='<div class="card"><div class="ch">⭐ Dons et traits</div><div class="cb">'
+   +(c.feats||[]).map(function(f){
+      return '<div class="feat"><h4>'+esc(f.n)+'</h4><div class="en">'+esc(f.en||'')+'</div>'
+        +f.b.map(function(b){return '<p>'+(b[0]?'<b>'+esc(b[0])+'</b> — ':'')+interp(b[1],c)+'</p>';}).join('')+'</div>';}).join('')
+   +'</div></div>';
+
+  h+='<div class="card"><div class="ch">⚠️ Rappels</div><div class="cb"><div class="grid2">'
+   +(c.rules||[]).map(function(r){return '<div class="box"><div style="font-size:12px;font-weight:700;margin-bottom:3px">'
+      +esc(r[0])+'</div><div class="bs" style="font-size:11px;line-height:1.45">'+interp(r[1],c)+'</div></div>';}).join('')
+   +'</div></div></div>';
+  $('t-fiche').innerHTML=h;
+}
+function box(l,v2,s){return '<div class="box"><div class="bl">'+esc(l)+'</div><div class="bv">'+esc(v2)+'</div>'
+  +(s?'<div class="bs">'+esc(s)+'</div>':'')+'</div>';}
+
+/* ── ONGLET LANCER ──────────────────────────────────── */
+function tIdx(c){return Math.min(c.st.tSize+c.st.tCplx,TT.length);}
+function tRow(c){var i=tIdx(c);return i<TT.length?TT[i]:null;}
+function tRes(c){var r=tRow(c);return r?(c.st.rage?r.r:r.nr):null;}
+function renderLancer(){
+  var c=C(),st=c.st,v=V(c),r=tRow(c),res=tRes(c),h='';
+  h+='<div class="card"><div class="ch">🏋️ Lancer de créature</div><div class="cb">'
+   +'<div class="note">Étape 1 — agripper (Athlétisme '+sgn(v.ATH)+' contesté). Étape 2, au tour suivant — lancer (jet de Force contesté). '
+   +'Capacité de port : <b style="color:var(--tx)">'+(st.rage?'1 200 kg':'600 kg')+'</b>'+(st.rage?' (rage ×2)':'')+'.</div>'
+   +'<div class="hr"></div>'
+   +'<div class="lbl">Taille réelle de la créature</div>'
+   +'<div class="row" style="margin-bottom:12px">'+TT.map(function(row,i){
+      return '<button class="szb'+(st.tSize===i?' on':'')+'" onclick="setT(\'tSize\','+i+')"><b>'+row.t+'</b>'
+        +'<small>'+row.p+' — '+row.x+'</small></button>';}).join('')+'</div>'
+   +'<div class="lbl">Complexité du lancer</div>'
+   +'<div class="row">'+CPLX.map(function(o){
+      return '<button class="szb grow'+(st.tCplx===o.v?' on':'')+'" onclick="setT(\'tCplx\','+o.v+')" style="text-align:center'
+        +(st.tCplx===o.v?';border-color:'+o.c+';background:'+o.c+'22;color:'+o.c:'')+'">'+o.l+'</button>';}).join('')+'</div>'
+   +'<div class="note" style="margin-top:7px">En combat, la complexité est <b style="color:var(--bad)">Difficile</b> par défaut.</div>'
+   +'</div></div>';
+  h+='<div class="card" style="border-color:'+(res?'var(--blu)':'var(--bad)')+'"><div class="cb">'
+   +(res
+     ?'<div class="bl" style="font-size:12px;color:var(--mut)">Ligne effective — '+esc(r.t)+' ('+esc(r.p)+')</div>'
+      +'<div class="grid3" style="margin-top:9px">'
+      +box('Distance',m(res.d),'horizontale')+box('Hauteur',m(res.h),'verticale')
+      +box('Dégâts',res.g==='0'?'aucun':res.g,'contondants')+'</div>'
+      +'<div class="note" style="margin-top:9px">'+(st.rage?'👹 Valeurs en rage.':'Sans rage — la rage double la capacité de port.')+'</div>'
+     :'<div style="color:var(--bad);font-weight:800;font-size:16px">⛔ Lancer impossible</div>'
+      +'<div class="note" style="margin-top:5px">Trop lourd pour ta capacité de port'+(st.rage?'':' — essaie en rage')+'.</div>')
+   +'</div></div>';
+  h+='<div class="card"><div class="ch">📊 Table complète</div><div class="cb" style="padding:4px 6px">'
+   +'<table class="tbl"><thead><tr><th class="nm" style="text-align:left">Taille</th>'
+   +'<th>📏</th><th>↕️</th><th>💥</th><th style="color:var(--rage)">📏</th><th style="color:var(--rage)">↕️</th><th style="color:var(--rage)">💥</th></tr></thead><tbody>'
+   +TT.map(function(row,i){
+      var cell=function(o){return o?('<td>'+m(o.d)+'</td><td>'+m(o.h)+'</td><td>'+(o.g==='0'?'—':o.g)+'</td>'):'<td colspan="3" style="color:var(--bad)">⛔</td>';};
+      return '<tr class="'+(i===tIdx(c)?'hi':'')+'"><td class="nm"><b>'+row.t+'</b><br><span style="color:var(--dim)">'+row.p+'</span></td>'
+        +cell(row.nr)+cell(row.r)+'</tr>';}).join('')
+   +'</tbody></table></div></div>';
+  $('t-lancer').innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ACTIONS UTILISATEUR
+   ══════════════════════════════════════════════════════════ */
+function setTab(t){UI.tab=t;
+  ['tour','actions','fiche','lancer','perso'].forEach(function(k){
+    $('t-'+k).className='tab'+(k===t?' on':'');});
+  Array.prototype.forEach.call(document.querySelectorAll('.nb'),function(b){
+    b.className='nb'+(b.dataset.t===t?' on':'');});
+  try{window.scrollTo(0,0);}catch(e){}
+  renderAll();}
+function toggleZen(){UI.zen=!UI.zen;document.body.classList.toggle('zen',UI.zen);}
+function dPV(d){var st=T();st.pv=Math.max(0,Math.min(pvMax(),st.pv+d));renderHdr();renderTour();save();}
+function setPV(n){var st=T();st.pv=Math.max(0,Math.min(pvMax(),n|0));renderAll();}
+function useRes(k){var st=T();st.used[k]=!st.used[k];renderAll();}
+function tog(k){var st=T();
+  if(k==='shield'&&!st.shield){var w=heldW();if(w&&w.needsTwoHands){var alt=C().weapons.filter(function(x){return !x.needsTwoHands;})[0];
+    if(alt){st.wpn=alt.id;toast('Arme à deux mains rangée → '+alt.name);}}}
+  st[k]=!st[k];renderAll();}
+function toggleRage(){var st=T();
+  if(!st.rage){if((st.pool.rage||0)<=0)return;st.pool.rage--;st.rage=true;}
+  else st.rage=false;
+  renderAll();}
+function setWpn(id){var c=C(),w=wpnById(c,id);if(!w)return;
+  if(wBlocked(c,w)){toast('Range le bouclier pour cette arme');return;}
+  c.st.wpn=id;renderAll();}
+function setFE(k,v2){var st=T();if(k==='w')st.feWpn=v2;else st.feEl=v2;renderAll();}
+function setPool(id,n){var st=T();st.pool[id]=(st.pool[id]===n)?n-1:n;renderAll();}
+function togCond(id){var st=T();st.cond[id]=!st.cond[id];renderTour();renderHdr();save();}
+function setT(k,v2){T()[k]=v2;renderLancer();}
+function nextTurn(){var st=T();st.turn++;
+  st.used={action:0,ba:0,reaction:0,traction:0,wpnChg:0};
+  if(st.surprise)st.surprise=false;
+  renderAll();toast('Tour '+st.turn);}
+function rest(kind){var c=C(),st=c.st,v=V(c);
+  if(kind==='long'){st.pv=pvMax(c);(c.pools||[]).forEach(function(p){st.pool[p.id]=Math.round(num(p.max,v));});}
+  (c.pools||[]).forEach(function(p){if(p.recharge==='Par combat')st.pool[p.id]=Math.round(num(p.max,v));});
+  st.turn=1;st.rage=false;st.reckless=false;st.surprise=true;st.grappled=false;st.cond={};
+  st.used={action:0,ba:0,reaction:0,traction:0,wpnChg:0};
+  renderAll();toast(kind==='long'?'Repos long — tout est rechargé':'Nouveau combat');}
+function doAction(id){
+  var c=C(),st=c.st,a=(c.actions||[]).filter(function(x){return x.id===id;})[0];
+  if(!a)return;
+  if(a.tool==='throw'){setTab('lancer');return;}
+  if(a.pool){st.pool[a.pool]=Math.max(0,(st.pool[a.pool]||0)-1);}
+  if(a.free)st.used[a.free]=1;
+  else if(a.type==='action')st.used.action=1;
+  else if(a.type==='bonus')st.used.ba=1;
+  else if(a.type==='reaction')st.used.reaction=1;
+  renderAll();toast(a.name);
+}
+
+/* ── modale de saisie numérique ─────────────────────── */
+var KPV='';
+function askPV(){KPV='';openMdl('<div class="mh"><b>Points de vie</b>'
+  +'<button class="ico" onclick="closeMdl()">✕</button></div>'
+  +'<div class="kpv" id="kpv">'+T().pv+'</div>'
+  +'<div class="kp">'+[1,2,3,4,5,6,7,8,9].map(function(d){return '<button onclick="kp(\''+d+'\')">'+d+'</button>';}).join('')
+  +'<button onclick="kp(\'c\')" style="font-size:14px">C</button><button onclick="kp(\'0\')">0</button>'
+  +'<button onclick="kp(\'b\')">⌫</button></div>'
+  +'<div class="row" style="margin-top:12px">'
+  +'<button class="btn grow" onclick="closeMdl()">Annuler</button>'
+  +'<button class="btn grow" style="border-color:var(--act);color:var(--act)" onclick="kpOk()">Valider</button></div>');}
+function kp(d){if(d==='c')KPV='';else if(d==='b')KPV=KPV.slice(0,-1);
+  else if(KPV.length<4)KPV+=d;
+  $('kpv').textContent=KPV===''?'0':KPV;}
+function kpOk(){setPV(parseInt(KPV||'0',10));closeMdl();}
+function openMdl(html){$('mdl-c').innerHTML=html;$('mdl').classList.add('open');}
+function closeMdl(){$('mdl').classList.remove('open');}
+/* ══════════════════════════════════════════════════════════
+   ONGLET PERSOS — sélection, sauvegarde, éditeur
+   ══════════════════════════════════════════════════════════ */
+function renderPerso(){
+  if(UI.edit){renderEditor();return;}
+  var h='';
+  h+='<div class="card"><div class="ch">👤 Personnages<span class="sub">'+DB.chars.length+'</span></div>'
+   +DB.chars.map(function(c){
+      var on=c.id===DB.active;
+      return '<div class="chr'+(on?' on':'')+'">'
+        +'<button class="av" onclick="pick(\''+c.id+'\')">'+c.icon+'</button>'
+        +'<div class="ci" onclick="pick(\''+c.id+'\')"><b>'+esc(c.name)+(on?' ✓':'')+'</b><small>'+esc(c.sub||'')
+        +' · '+c.st.pv+'/'+pvMax(c)+' PV</small></div>'
+        +'<button class="ico" onclick="edit(\''+c.id+'\')">✎</button>'
+        +'<button class="ico" onclick="dup(\''+c.id+'\')">⧉</button>'
+        +'<button class="ico" onclick="del(\''+c.id+'\')">🗑</button></div>';}).join('')
+   +'<div class="cb"><div class="row">'
+   +'<button class="btn grow" onclick="addChar(0)">+ Vierge</button>'
+   +'<button class="btn grow" onclick="addChar(1)">+ Copie du modèle</button>'
+   +'</div></div></div>';
+
+  var c=C();
+  h+='<div class="card"><div class="ch">💾 Sauvegarde</div><div class="cb">'
+   +'<div class="row"><button class="btn grow" onclick="expAll()">↓ Exporter tout</button>'
+   +'<button class="btn grow" onclick="expOne()">↓ Exporter '+esc(c.name.split(' ')[0])+'</button></div>'
+   +'<div class="row" style="margin-top:9px"><button class="btn wide" onclick="$(\'imp\').click()">↑ Importer un fichier</button></div>'
+   +'<input type="file" id="imp" accept=".json,application/json" style="display:none" onchange="impFile(this)">'
+   +'<div class="note" style="margin-top:8px">La fiche s\u2019enregistre toute seule dans le navigateur. L\u2019export .json sert de copie de secours et permet de passer d\u2019un appareil à l\u2019autre. Version '+APP_VER+'.</div>'
+   +'<div class="hr"></div>'
+   +'<div class="row"><button class="btn grow" onclick="snap(1)">📌 Marquer le début du combat</button>'
+   +'<button class="btn grow" onclick="snap(0)" '+(c._snap?'':'disabled')+'>↺ Revenir au début</button></div>'
+   +'<div class="row" style="margin-top:9px"><button class="btn grow" onclick="rest(\'long\')">🌙 Repos long</button>'
+   +'<button class="btn grow" onclick="rest(\'court\')">⚔️ Nouveau combat</button></div>'
+   +'</div></div>';
+  $('t-perso').innerHTML=h;
+}
+function pick(id){DB.active=id;UI.tab='tour';setTab('tour');toast(C().name);}
+function edit(id){UI.edit=id;try{window.scrollTo(0,0);}catch(e){}renderPerso();}
+function dup(id){var c=clone(DB.chars.filter(function(x){return x.id===id;})[0]);
+  c.id=uid();c.name=c.name+' (copie)';DB.chars.push(c);renderPerso();save();toast('Copie créée');}
+function del(id){if(DB.chars.length<2){toast('Il faut au moins un personnage');return;}
+  var c=DB.chars.filter(function(x){return x.id===id;})[0];
+  openMdl('<div class="mh"><b>Supprimer '+esc(c.name)+' ?</b></div>'
+   +'<div class="note">La fiche et son état de combat seront perdus. Pense à exporter avant.</div>'
+   +'<div class="row" style="margin-top:14px"><button class="btn grow" onclick="closeMdl()">Annuler</button>'
+   +'<button class="btn grow" style="border-color:var(--bad);color:var(--bad)" onclick="delOk(\''+id+'\')">Supprimer</button></div>');}
+function delOk(id){DB.chars=DB.chars.filter(function(x){return x.id!==id;});
+  if(DB.active===id)DB.active=DB.chars[0].id;closeMdl();renderAll();toast('Supprimé');}
+function addChar(fromTpl){
+  var c=fromTpl?clone(DEF_CHAR):{id:'',icon:'🗡️',name:'Nouveau personnage',sub:'',level:1,lvMin:1,lvMax:20,
+    stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},saveProf:[],hpTable:{},hpMax:10,
+    acF:'10+DEX',shieldAC:2,speed:9,hitDie:'d8',rageDmg:{},rageDoubleDice:false,feDice:'',surpriseDice:'',
+    reachTurn:0,reachRage:0,attacks:1,rageTags:[],weapons:[{id:'w1',icon:'⚔️',name:'Épée longue',dice:'1d8',
+    versatile:'1d10',category:'melee',reach:0,mastery:''}],pools:[],actions:[],feats:[],rules:[],st:clone(DEF_ST)};
+  c.id=uid();
+  if(!fromTpl){c.st.pv=10;c.st.wpn='w1';c.st.feWpn='w1';c.st.pool={};c.hpTable={};c.hpTable[1]=10;}
+  DB.chars.push(c);DB.active=c.id;UI.edit=c.id;renderAll();}
+function snap(on){var c=C();
+  if(on){c._snap=clone(c.st);toast('Début de combat enregistré');}
+  else if(c._snap){c.st=clone(c._snap);toast('État restauré');}
+  renderAll();}
+
+/* ── export / import ────────────────────────────────── */
+function dl(txt,name){
+  try{var b=new Blob([txt],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=u;a.download=name;document.body.appendChild(a);a.click();
+    setTimeout(function(){URL.revokeObjectURL(u);a.remove();},400);toast('Fichier exporté');}
+  catch(e){openMdl('<div class="mh"><b>Copie manuelle</b><button class="ico" onclick="closeMdl()">✕</button></div>'
+    +'<textarea style="min-height:240px" class="mono">'+esc(txt)+'</textarea>');}
+}
+function stamp(){var d=new Date();return d.toISOString().slice(0,10);}
+function expAll(){dl(JSON.stringify(DB),'fiches-combat-'+stamp()+'.json');}
+function expOne(){dl(JSON.stringify({v:2,chars:[C()],active:C().id}),
+  C().name.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+stamp()+'.json');}
+function impFile(inp){
+  var f=inp.files&&inp.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{
+    var d=JSON.parse(r.result),list=d.chars||(d.id?[d]:null);
+    if(!list||!list.length)throw 0;
+    var n=0;list.forEach(function(c){
+      if(!c.id)c.id=uid();
+      c.st=Object.assign(clone(DEF_ST),c.st||{});
+      var i=DB.chars.map(function(x){return x.id;}).indexOf(c.id);
+      if(i>=0)DB.chars[i]=c;else DB.chars.push(c);n++;});
+    DB.active=list[0].id;renderAll();toast(n+' fiche'+(n>1?'s':'')+' importée'+(n>1?'s':''));
+  }catch(e){toast('Fichier illisible');}};
+  r.readAsText(f);inp.value='';
+}
+
+/* ══════════════════════════════════════════════════════════
+   ÉDITEUR
+   ══════════════════════════════════════════════════════════ */
+function fT(l,v2,fn,hint){return '<div class="f"><label>'+esc(l)+(hint?' <span class="hint">'+esc(hint)+'</span>':'')
+  +'</label><input type="text" value="'+esc(v2==null?'':v2)+'" oninput="'+fn+'"></div>';}
+function fN(l,v2,fn,hint){return '<div class="f"><label>'+esc(l)+(hint?' <span class="hint">'+esc(hint)+'</span>':'')
+  +'</label><input type="number" value="'+(v2==null?'':v2)+'" oninput="'+fn+'"></div>';}
+function fA(l,v2,fn,hint){return '<div class="f"><label>'+esc(l)+(hint?' <span class="hint">'+esc(hint)+'</span>':'')
+  +'</label><textarea oninput="'+fn+'">'+esc(v2||'')+'</textarea></div>';}
+function fS(l,v2,opts,fn){return '<div class="f"><label>'+esc(l)+'</label><select onchange="'+fn+'">'
+  +opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(v2)===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>';}).join('')
+  +'</select></div>';}
+function fSw(l,on,fn,sub){return '<div class="sw"><div class="sl">'+esc(l)+(sub?'<small>'+esc(sub)+'</small>':'')+'</div>'
+  +'<button class="tgl'+(on?' on':'')+'" onclick="'+fn+'"></button></div>';}
+function itm(key,i,title,sub,body,ctrl){
+  var op=UI['o_'+key]===i;
+  return '<div class="item'+(op?' open':'')+'"><div class="ih">'
+    +'<div class="it" onclick="UI[\'o_'+key+'\']='+(op?'-1':i)+';renderEditor()">'+esc(title)+'<small>'+esc(sub||'')+'</small></div>'
+    +(ctrl||'')+'<button class="ico" onclick="UI[\'o_'+key+'\']='+(op?'-1':i)+';renderEditor()">'+(op?'▾':'▸')+'</button>'
+    +'</div><div class="ib">'+body+'</div></div>';
+}
+function renderEditor(){
+  var c=DB.chars.filter(function(x){return x.id===UI.edit;})[0];
+  if(!c){UI.edit=null;return renderPerso();}
+  var h='<div class="row" style="margin-bottom:12px">'
+   +'<button class="btn grow" onclick="UI.edit=null;renderAll()">‹ Terminer</button>'
+   +'<button class="btn" onclick="expOne()">↓ Export</button></div>';
+
+  h+='<div class="card"><div class="ch">🪪 Identité</div><div class="cb">'
+   +'<div class="fr">'+fT('Icône',c.icon,"setC('icon',this.value)")+fT('Nom',c.name,"setC('name',this.value)")+'</div>'
+   +fT('Sous-titre',c.sub,"setC('sub',this.value)",'espèce, classe, sous-classe')
+   +'<div class="fr">'+fN('Niveau',c.level,"setC('level',+this.value)")
+   +fN('Attaques par action',c.attacks,"setC('attacks',+this.value)")+'</div>'
+   +'</div></div>';
+
+  var SN={str:'Force',dex:'Dextérité',con:'Constitution',int:'Intelligence',wis:'Sagesse',cha:'Charisme'};
+  h+='<div class="card"><div class="ch">🎲 Caractéristiques</div><div class="cb">'
+   +Object.keys(SN).map(function(k){
+      var pr=(c.saveProf||[]).indexOf(k)>=0;
+      return '<div class="fr" style="align-items:flex-end">'
+        +fN(SN[k],c.stats[k],"setC('stats."+k+"',+this.value)")
+        +'<div class="f" style="flex:0 0 auto"><label>Sauv.</label>'
+        +'<button class="btn sm" onclick="togSave(\''+k+'\')" style="'+(pr?'border-color:var(--fre);color:var(--fre)':'')+'">'
+        +(pr?'maîtrise':'—')+'</button></div></div>';}).join('')
+   +'</div></div>';
+
+  h+='<div class="card"><div class="ch">🛡️ Défenses et traits</div><div class="cb">'
+   +'<div class="fr">'+fN('PV max au niveau '+c.level,(c.hpTable&&c.hpTable[c.level])||c.hpMax||0,"setHP(+this.value)")
+   +fN('Vitesse (m)',c.speed,"setC('speed',+this.value)")+'</div>'
+   +'<div class="fr">'+fT('Formule de CA',c.acF,"setC('acF',this.value)",'ex. 10+DEX+CON')
+   +fN('Bonus du bouclier',c.shieldAC,"setC('shieldAC',+this.value)")+'</div>'
+   +'<div class="fr">'+fN('Portée bonus — ton tour',c.reachTurn,"setC('reachTurn',+this.value)",'Longs Membres')
+   +fN('Portée bonus — en rage',c.reachRage,"setC('reachRage',+this.value)",'Stature Géante')+'</div>'
+   +'<div class="fr">'+fT('Dé du Fendoir',c.feDice,"setC('feDice',this.value)",'vide = aucun')
+   +fT('Dés de surprise',c.surpriseDice,"setC('surpriseDice',this.value)")+'</div>'
+   +fT('Dégâts de rage au niveau '+c.level,(c.rageDmg&&c.rageDmg[c.level])||0,"setRD(+this.value)")
+   +fSw('Doubler les dés d\u2019arme en rage',!!c.rageDoubleDice,"setC('rageDoubleDice',!C0().rageDoubleDice)",'règle maison du MJ')
+   +'</div></div>';
+
+  h+='<div class="card"><div class="ch">⚔️ Armes<span class="sub">'+c.weapons.length+'</span></div><div class="cb">'
+   +c.weapons.map(function(w,i){
+      return itm('w',i,w.icon+' '+w.name,(w.dice||'')+(w.versatile?' / '+w.versatile:'')+' · '+(w.mastery||'sans maîtrise'),
+        '<div class="fr">'+fT('Icône',w.icon,"setW("+i+",'icon',this.value)")+fT('Nom',w.name,"setW("+i+",'name',this.value)")+'</div>'
+        +'<div class="fr">'+fT('Dés',w.dice,"setW("+i+",'dice',this.value)",'ex. 2d6')
+        +fT('Versatile',w.versatile,"setW("+i+",'versatile',this.value)",'à deux mains')+'</div>'
+        +'<div class="fr">'+fS('Catégorie',w.category,[['melee','Mêlée'],['thrown','Lancer'],['ranged','Distance']],"setW("+i+",'category',this.value)")
+        +fN('Allonge bonus (m)',w.reach,"setW("+i+",'reach',+this.value)")+'</div>'
+        +'<div class="fr">'+fT('Portée',w.range,"setW("+i+",'range',this.value)",'ex. 9m / 36m')
+        +fT('Maîtrise',w.mastery,"setW("+i+",'mastery',this.value)")+'</div>'
+        +fA('Effet',w.eff,"setW("+i+",'eff',this.value)",'{DD} {ATH} {PB} utilisables')
+        +fSw('Deux mains obligatoires',!!w.needsTwoHands,"setW("+i+",'needsTwoHands',!C0().weapons["+i+"].needsTwoHands)",'désactivée par le bouclier')
+        +fSw('Dés doublés en rage',w.rageDouble!==false,"setW("+i+",'rageDouble',C0().weapons["+i+"].rageDouble===false)")
+        +fSw('Peut porter le Fendoir',w.fe!==false,"setW("+i+",'fe',C0().weapons["+i+"].fe===false)")
+        +'<button class="btn sm wide" style="border-color:var(--bad);color:var(--bad);margin-top:6px" onclick="delW('+i+')">Supprimer cette arme</button>')}).join('')
+   +'<button class="btn wide" onclick="addW()">+ Ajouter une arme</button></div></div>';
+
+  h+='<div class="card"><div class="ch">💠 Ressources<span class="sub">'+(c.pools||[]).length+'</span></div><div class="cb">'
+   +(c.pools||[]).map(function(p,i){
+      return itm('p',i,p.icon+' '+p.name,'max '+p.max+' · '+(p.recharge||''),
+        '<div class="fr">'+fT('Icône',p.icon,"setP("+i+",'icon',this.value)")+fT('Nom',p.name,"setP("+i+",'name',this.value)")+'</div>'
+        +'<div class="fr">'+fT('Maximum',p.max,"setP("+i+",'max',this.value)",'nombre ou formule (NIV, PB…)')
+        +fS('Recharge',p.recharge,[['Repos long','Repos long'],['Repos court','Repos court'],['Par combat','Par combat'],['Par tour','Par tour']],"setP("+i+",'recharge',this.value)")+'</div>'
+        +'<button class="btn sm wide" style="border-color:var(--bad);color:var(--bad)" onclick="delP('+i+')">Supprimer</button>')}).join('')
+   +'<button class="btn wide" onclick="addP()">+ Ajouter une ressource</button></div></div>';
+
+  var wopts=[['','— aucune —'],['held','Arme tenue']].concat(c.weapons.map(function(w){return [w.id,w.name];}));
+  h+='<div class="card"><div class="ch">📜 Actions<span class="sub">'+(c.actions||[]).length+'</span></div><div class="cb">'
+   +'<div class="note" style="margin-bottom:10px">Les attaques d\u2019arme sont générées automatiquement. Cette liste couvre tout le reste.</div>'
+   +(c.actions||[]).map(function(a,i){
+      var r=a.req||{};
+      return itm('a',i,a.name,({action:'Action',bonus:'Action bonus',reaction:'Réaction',free:'Gratuit'})[a.type],
+        fT('Nom',a.name,"setA("+i+",'name',this.value)")
+        +'<div class="fr">'+fT('Nom anglais',a.en,"setA("+i+",'en',this.value)")
+        +fS('Type',a.type,[['action','Action'],['bonus','Action bonus'],['reaction','Réaction'],['free','Gratuit']],"setA("+i+",'type',this.value)")+'</div>'
+        +'<div class="fr">'+fT('Portée',a.range,"setA("+i+",'range',this.value)",'{POR} = arme tenue')
+        +fT('Dégâts',a.dmg,"setA("+i+",'dmg',this.value)",'ex. 1d10 ou 1d4+FOR')+'</div>'
+        +'<div class="fr">'+fS('Arme utilisée',a.wpn,wopts,"setA("+i+",'wpn',this.value)")
+        +fT('Dés imposés',a.dice,"setA("+i+",'dice',this.value)",'remplace ceux de l\'arme')+'</div>'
+        +fA('Effet',a.eff,"setA("+i+",'eff',this.value)")
+        +'<div class="fr">'+fN('Niveau minimum',r.lv||0,"setR("+i+",'lv',+this.value)")
+        +fS('Arme requise',(r.wpn&&r.wpn[0])||'',[['','— aucune —']].concat(c.weapons.map(function(w){return [w.id,w.name];})),"setRW("+i+",this.value)")+'</div>'
+        +fSw('Rage requise',!!r.rage,"setR("+i+",'rage',C0().actions["+i+"].req&&C0().actions["+i+"].req.rage?0:1)")
+        +fSw('Attaque téméraire requise',!!r.reckless,"setR("+i+",'reckless',C0().actions["+i+"].req&&C0().actions["+i+"].req.reckless?0:1)")
+        +fSw('Impossible avec bouclier',!!r.noShield,"setR("+i+",'noShield',C0().actions["+i+"].req&&C0().actions["+i+"].req.noShield?0:1)")
+        +fS('Consomme une ressource',a.pool||'',[['','— aucune —']].concat((c.pools||[]).map(function(p){return [p.id,p.name];})),"setA("+i+",'pool',this.value)")
+        +'<button class="btn sm wide" style="border-color:var(--bad);color:var(--bad)" onclick="delA('+i+')">Supprimer</button>')}).join('')
+   +'<button class="btn wide" onclick="addA()">+ Ajouter une action</button></div></div>';
+
+  h+='<div class="card"><div class="ch">⚠️ Rappels<span class="sub">'+(c.rules||[]).length+'</span></div><div class="cb">'
+   +(c.rules||[]).map(function(r,i){return '<div class="fr">'+fT('Titre',r[0],"setRule("+i+",0,this.value)")
+      +fT('Texte',r[1],"setRule("+i+",1,this.value)")
+      +'<div class="f" style="flex:0 0 auto"><label>&nbsp;</label><button class="ico" onclick="delRule('+i+')">🗑</button></div></div>';}).join('')
+   +'<button class="btn wide" onclick="addRule()">+ Ajouter un rappel</button></div></div>';
+
+  h+='<button class="btn wide" onclick="UI.edit=null;renderAll()" style="border-color:var(--act);color:var(--act);margin-bottom:8px">Terminer</button>';
+  $('t-perso').innerHTML=h;
+}
+function C0(){return DB.chars.filter(function(x){return x.id===UI.edit;})[0];}
+function setC(path,v2){var c=C0(),p=path.split('.'),o=c;
+  for(var i=0;i<p.length-1;i++){if(!o[p[i]])o[p[i]]={};o=o[p[i]];}
+  o[p[p.length-1]]=v2;
+  if(path==='level'){if(!c.hpTable)c.hpTable={};
+    if(!c.hpTable[c.level])c.hpTable[c.level]=pvMax(c);
+    save();return renderEditor();}
+  save();renderHdr();}
+function setHP(v2){var c=C0();if(!c.hpTable)c.hpTable={};c.hpTable[c.level]=v2;c.hpMax=v2;
+  if(c.st.pv>v2)c.st.pv=v2;save();renderHdr();}
+function setRD(v2){var c=C0();if(!c.rageDmg)c.rageDmg={};c.rageDmg[c.level]=v2;save();}
+function togSave(k){var c=C0();c.saveProf=c.saveProf||[];var i=c.saveProf.indexOf(k);
+  if(i>=0)c.saveProf.splice(i,1);else c.saveProf.push(k);save();renderEditor();}
+function setW(i,k,v2){C0().weapons[i][k]=v2;save();if(k==='icon'||k==='name'||k==='needsTwoHands'||k==='rageDouble'||k==='fe')renderEditor();}
+function addW(){var c=C0();c.weapons.push({id:'w'+Date.now().toString(36).slice(-4),icon:'⚔️',name:'Nouvelle arme',
+  dice:'1d8',category:'melee',reach:0,mastery:''});UI.o_w=c.weapons.length-1;save();renderEditor();}
+function delW(i){var c=C0();c.weapons.splice(i,1);if(!c.weapons.length)addW();
+  if(!wpnById(c,c.st.wpn))c.st.wpn=c.weapons[0].id;UI.o_w=-1;save();renderEditor();}
+function setP(i,k,v2){C0().pools[i][k]=v2;save();renderEditor();}
+function addP(){var c=C0();c.pools=c.pools||[];
+  c.pools.push({id:'p'+Date.now().toString(36).slice(-4),icon:'💠',name:'Ressource',max:'1',recharge:'Repos long'});
+  c.st.pool[c.pools[c.pools.length-1].id]=1;UI.o_p=c.pools.length-1;save();renderEditor();}
+function delP(i){var c=C0();c.pools.splice(i,1);UI.o_p=-1;save();renderEditor();}
+function setA(i,k,v2){C0().actions[i][k]=v2;save();if(k==='name'||k==='type')renderEditor();}
+function setR(i,k,v2){var a=C0().actions[i];a.req=a.req||{};a.req[k]=v2;save();renderEditor();}
+function setRW(i,v2){var a=C0().actions[i];a.req=a.req||{};if(v2)a.req.wpn=[v2];else delete a.req.wpn;save();}
+function addA(){var c=C0();c.actions=c.actions||[];
+  c.actions.push({id:'a'+Date.now().toString(36).slice(-4),type:'action',name:'Nouvelle action',eff:''});
+  UI.o_a=c.actions.length-1;save();renderEditor();}
+function delA(i){C0().actions.splice(i,1);UI.o_a=-1;save();renderEditor();}
+function setRule(i,j,v2){C0().rules[i][j]=v2;save();}
+function addRule(){var c=C0();c.rules=c.rules||[];c.rules.push(['⚠️ Titre','Texte']);save();renderEditor();}
+function delRule(i){C0().rules.splice(i,1);save();renderEditor();}
+
+/* ══════════════════════════════════════════════════════════
+   DÉMARRAGE
+   ══════════════════════════════════════════════════════════ */
+function boot(){
+  var raw=lsGet(KEY);
+  if(raw){try{DB=JSON.parse(raw);}catch(e){DB=null;}}
+  if(!DB||!DB.chars||!DB.chars.length)DB={v:2,chars:[clone(DEF_CHAR)],active:DEF_CHAR.id};
+  DB.chars.forEach(function(c){
+    c.st=Object.assign(clone(DEF_ST),c.st||{});
+    c.st.used=Object.assign({action:0,ba:0,reaction:0,traction:0,wpnChg:0},c.st.used||{});
+    c.st.cond=c.st.cond||{};c.st.pool=c.st.pool||{};
+    (c.pools||[]).forEach(function(p){if(c.st.pool[p.id]==null)c.st.pool[p.id]=Math.round(num(p.max,V(c)));});
+    if(!wpnById(c,c.st.wpn)&&c.weapons&&c.weapons[0])c.st.wpn=c.weapons[0].id;});
+  if(!DB.chars.filter(function(x){return x.id===DB.active;}).length)DB.active=DB.chars[0].id;
+
+  Array.prototype.forEach.call(document.querySelectorAll('.nb'),function(b){
+    b.addEventListener('click',function(){setTab(b.dataset.t);});});
+
+  var rep=null,acc=0;
+  function stop(){clearTimeout(rep);clearInterval(rep);rep=null;acc=0;}
+  document.addEventListener('pointerdown',function(e){
+    var b=e.target.closest?e.target.closest('.hold'):null;if(!b)return;
+    var d=parseInt(b.dataset.d,10);dPV(d);
+    rep=setTimeout(function(){rep=setInterval(function(){acc++;dPV(d*(acc>12?3:1));},95);},420);});
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    document.addEventListener(ev,stop);});
+  $('mdl').addEventListener('click',function(e){if(e.target.id==='mdl')closeMdl();});
+  try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});}catch(e){}
+  setTab('tour');
+}
+boot();
+</script>
+</body>
+</html>
